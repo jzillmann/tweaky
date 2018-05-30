@@ -1,0 +1,92 @@
+allprojects {
+    group = 'io.morethan.tweaky'
+    version = projectVersion
+}
+
+ext.unitResults = file("$buildDir/reports/tests/unit")
+ext.itResults = file("$buildDir/reports/tests/it")
+ext.testResults = file("$buildDir/reports/tests/all")
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+    }
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        compile 'com.google.guava:guava:23.0'
+
+        testCompile("org.junit.jupiter:junit-jupiter-api:5.1.0")
+        testRuntime("org.junit.jupiter:junit-jupiter-engine:5.1.0")
+        testCompileOnly('org.apiguardian:apiguardian-api:1.0.0') // Avoid compiler warnings about @API annotations in JUnit code
+
+        testCompile 'org.assertj:assertj-core:3.9.0'
+    }
+
+
+    repositories {
+        jcenter()
+    }
+
+    eclipse {
+        jdt.file.withProperties {
+            it['org.eclipse.jdt.core.formatter.lineSplit'] = '200'
+            it['org.eclipse.jdt.core.formatter.comment.line_length'] = '180'
+            it['org.eclipse.jdt.core.formatter.tabulation.char'] = 'space'
+            it['org.eclipse.jdt.core.formatter.tabulation.size'] = '4'
+            it['org.eclipse.jdt.core.formatter.join_wrapped_lines'] = 'false'
+            it['org.eclipse.jdt.core.compiler.doc.comment.support'] = 'enabled'
+            it['org.eclipse.jdt.core.compiler.problem.missingOverrideAnnotation'] = 'warning'
+            it['org.eclipse.jdt.core.compiler.problem.missingJavadocTags'] = 'warning'
+            it['org.eclipse.jdt.core.compiler.problem.parameterAssignment'] = 'ignore'
+            it['org.eclipse.jdt.core.compiler.problem.syntheticAccessEmulation'] = 'ignore'
+            it['org.eclipse.jdt.core.compiler.problem.unqualifiedFieldAccess'] = 'ignore'
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+        ignoreFailures project.hasProperty('ignoreTestFailures')
+    }
+    
+}
+
+task clean(group: 'Build', description: 'Deletes the build directory.') {
+    dependsOn subprojects.collect { it.tasks.matching { it.name == 'clean' } }
+    delete "$rootDir/build"
+}
+
+/**
+ * Facade for the subproject test targets. Its main goal is to create a combined test report on all subprojects. 
+ * Does not execute the tests of the test submodule since those are considered integration tests.
+ */
+task unit(type: TestReport, group: 'Verification', description: 'Runs the unit tests (All tests excluding those of the test subproject).') {
+    destinationDir = unitResults
+    reportOn (subprojects*.test - project(':tweaky-test').test)
+    doLast {
+        println "See reports at file://$unitResults/index.html"
+    }
+}
+
+/**
+ * Executes both, the unit test of each submodule and the integration tests.
+ */
+task test(type: TestReport, description: 'Runs the unit & it tests.', dependsOn: ['unit', 'tweaky-test:it']) {
+    destinationDir = testResults
+    reportOn subprojects*.test
+    doLast {
+        println "See test report: file://$testResults/index.html"
+    }
+}
+

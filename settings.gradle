@@ -1,0 +1,15 @@
+rootProject.name = 'tweaky'
+
+module('conductor')
+module('node')
+module('shared-server')
+module('shared-client')
+module('client')
+module('test')
+
+def module(String shortName) {
+    def name = ":tweaky-$shortName"
+    include name
+    project(name).projectDir = file("modules/$shortName")
+}
+
