@@ -2,6 +2,9 @@ package io.morethan.tweaky.conductor;
 
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -14,6 +17,8 @@ import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
  * A client for {@link ConductorGrpcService}.
  */
 public class ConductorClient implements AutoCloseable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ConductorClient.class);
 
     private final ManagedChannel _rpcChannel;
     private final ConductorBlockingStub _blockingNodeProtocol;
@@ -38,8 +43,7 @@ public class ConductorClient implements AutoCloseable {
         try {
             _rpcChannel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            // TODO logging
-            // LOG.warn("Interrupted closing node-client");
+            LOG.warn("Interrupted closing node-client");
             Thread.currentThread().interrupt();
         }
     }

@@ -1,5 +1,9 @@
 package io.morethan.tweaky.test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.FluentIterable;
 import com.google.common.util.concurrent.AbstractIdleService;
 
 import io.grpc.BindableService;
@@ -11,6 +15,7 @@ import io.grpc.ServerBuilder;
  */
 public class GrpcServer extends AbstractIdleService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GrpcServer.class);
     private final Server _rpcServer;
 
     public GrpcServer(int port, BindableService... grpcServices) {
@@ -27,7 +32,10 @@ public class GrpcServer extends AbstractIdleService {
 
     @Override
     protected void startUp() throws Exception {
+        LOG.info("Starting GRPC server with following services: {}",
+                FluentIterable.from(_rpcServer.getServices()).transform(serviceDefinition -> serviceDefinition.getServiceDescriptor().getName()).toList());
         _rpcServer.start();
+        LOG.info("Started GRPC server on port " + _rpcServer.getPort());
     }
 
     @Override

@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import org.apache.log4j.Logger;
 
 import io.grpc.Metadata;
@@ -19,7 +22,7 @@ import io.grpc.StatusRuntimeException;
  */
 public class Errors {
 
-    // private static final Logger LOG = Logger.getLogger(Errors.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Errors.class);
 
     private static final Key<RuntimeException> CAUSING_EXCEPTION = Key.of("causing-exception-bin", new BinaryMarshaller<RuntimeException>() {
 
@@ -31,8 +34,7 @@ public class Errors {
                 out.writeObject(value);
                 return outputStream.toByteArray();
             } catch (IOException e) {
-                // TODO logging
-                // LOG.warn("Could not serialize exception", e);
+                LOG.warn("Could not serialize exception", e);
                 return new byte[0];
             }
         }
@@ -47,8 +49,7 @@ public class Errors {
                 ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
                 return (RuntimeException) objectInputStream.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                // TODO logging
-                // LOG.warn("Could not de-serialize exception", e);
+                LOG.warn("Could not de-serialize exception", e);
             }
             return null;
         }
