@@ -1,9 +1,10 @@
 dependencies {
     compile project(':tweaky-conductor')
+    compile project(':tweaky-node')
 }
 
 /**
- * Facade for the subproject test targets. Its main goal is to create a combined test report on all subprojects. 
+ * Facade for the subproject test targets. Its main goal is to create a combined test report on all sub-projects.
  */
 task it(type: TestReport, group: 'Verification', description: 'Runs the it tests (All tests of the test subproject).', dependsOn: test) {
     destinationDir = itResults

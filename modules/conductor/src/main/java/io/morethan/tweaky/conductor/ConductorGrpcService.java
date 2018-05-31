@@ -5,6 +5,7 @@ import io.grpc.stub.StreamObserver;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc;
 import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountReply;
 import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
+import io.morethan.tweaky.shared.Errors;
 
 /**
  * GRPC service implementation for {@link ConductorGrpc}.

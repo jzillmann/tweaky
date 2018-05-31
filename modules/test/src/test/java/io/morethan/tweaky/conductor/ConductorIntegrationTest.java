@@ -6,9 +6,10 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 
+import io.morethan.tweaky.shared.GrpcClient;
 import io.morethan.tweaky.test.GrpcServer;
 
-public class ConductorTest {
+public class ConductorIntegrationTest {
 
     @Test
     void testNodeCount() throws Exception {
@@ -18,7 +19,7 @@ public class ConductorTest {
         GrpcServer grpcServer = new GrpcServer(0, new ConductorGrpcService(conductor));
         grpcServer.startAsync().awaitRunning();
 
-        try (ConductorClient client = new ConductorClient("localhost", grpcServer.getPort())) {
+        try (ConductorClient client = new ConductorClient(GrpcClient.standalone("localhost", grpcServer.getPort()))) {
             assertThat(client.nodeCount()).isEqualTo(23);
         }
 

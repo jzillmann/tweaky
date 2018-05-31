@@ -1,4 +1,4 @@
-package io.morethan.tweaky.conductor;
+package io.morethan.tweaky.shared;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
