@@ -1,0 +1,39 @@
+apply plugin: 'com.google.protobuf'
+
+dependencies {
+    compile "io.grpc:grpc-netty:$grpcVersion"
+    compile "io.grpc:grpc-protobuf:$grpcVersion"
+    compile "io.grpc:grpc-stub:$grpcVersion"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/proto'
+            srcDirs 'build/proto/main/java'
+            srcDirs 'build/proto/main/grpc'
+        }
+    }
+}
+
+protobuf {
+
+    generatedFilesBaseDir = "$projectDir/build/proto"
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.5.1-1"
+    }
+    plugins {
+        grpc {
+        artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+        }
+    }
+    generateProtoTasks {
+        ofSourceSet('main')*.plugins {
+            // Apply the "grpc" plugin whose spec is defined above, without
+            // options.  Note the braces cannot be omitted, otherwise the
+            // plugin will not be added. This is because of the implicit way
+            // NamedDomainObjectContainer binds the methods.
+            grpc { }
+        }
+    }
+}

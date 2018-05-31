@@ -1,3 +1,9 @@
+dependencies {
+
+    compile project(':tweaky-shared-server')
+
+}
+
 /**
  * Facade for the subproject test targets. Its main goal is to create a combined test report on all subprojects. 
  */
