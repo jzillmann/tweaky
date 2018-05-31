@@ -9,7 +9,7 @@ import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
 /**
  * GRPC service implementation for {@link ConductorGrpc}.
  */
-public final class ConductorGrpcService extends ConductorGrpc.ConductorImplBase {
+final class ConductorGrpcService extends ConductorGrpc.ConductorImplBase {
 
     private final Conductor _conductor;
 

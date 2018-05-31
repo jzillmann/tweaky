@@ -3,7 +3,7 @@ rootProject.name = 'tweaky'
 module('conductor')
 module('conductor-client')
 module('node')
-module('shared-client')
+module('node-client')
 module('client')
 module('test')
 
