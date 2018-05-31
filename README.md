@@ -11,5 +11,7 @@ Pieces of a traditional master-node cluster setup with modern technology.
 
 √- GRPC sample
 √- Logging
-- NodeRegistrationValidator
+√- NodeRegistrationValidator
+- Implement Node registration
 - Dagger example
+- ServiceLoader example
