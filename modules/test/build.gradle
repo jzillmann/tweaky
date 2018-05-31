@@ -1,7 +1,5 @@
 dependencies {
-
-    compile project(':tweaky-shared-server')
-
+    compile project(':tweaky-conductor')
 }
 
 /**

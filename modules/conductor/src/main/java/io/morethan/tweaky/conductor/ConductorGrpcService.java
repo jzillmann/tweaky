@@ -10,16 +10,21 @@ import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
  * GRPC service implementation for {@link ConductorGrpc}.
  */
 public final class ConductorGrpcService extends ConductorGrpc.ConductorImplBase {
-    // TODO package private ?
+
+    private final Conductor _conductor;
+
+    public ConductorGrpcService(Conductor conductor) {
+        _conductor = conductor;
+    }
 
     @Override
     public void nodeCount(NodeCountRequest request, StreamObserver<NodeCountReply> responseObserver) {
         try {
-            int nodeCount = 23;
-            responseObserver.onNext(NodeCountReply.newBuilder().setCount(nodeCount).build());
+            responseObserver.onNext(NodeCountReply.newBuilder().setCount(_conductor.nodeCount()).build());
             responseObserver.onCompleted();
         } catch (RuntimeException e) {
             responseObserver.onError(Errors.newRpcError(Status.INTERNAL, e));
         }
     }
+
 }
