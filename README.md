@@ -12,6 +12,7 @@ Pieces of a traditional master-node cluster setup with modern technology.
 √- GRPC sample
 √- Logging
 √- NodeRegistrationValidator
+√- Junit5 ExternalResource
 - Implement Node registration
 - Dagger example
 - ServiceLoader example

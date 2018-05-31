@@ -4,24 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.morethan.tweaky.conductor.registration.NodeRegistry;
 import io.morethan.tweaky.conductor.registration.NodeRegistryGrpcService;
 import io.morethan.tweaky.conductor.registration.SingleTokenValidator;
-import io.morethan.tweaky.shared.GrpcClient;
-import io.morethan.tweaky.test.GrpcServer;
+import io.morethan.tweaky.testsupport.GrpcServerRule;
 
 public class NodeRegistryIntegrationTest {
 
+    private static final String TOKEN = "abc123";
+
+    @RegisterExtension
+    static GrpcServerRule _grpcServer = new GrpcServerRule(new NodeRegistryGrpcService(new NodeRegistry(new SingleTokenValidator(TOKEN))));
+
     @Test
     void testNodeCount() throws Exception {
-        String token = "abc123";
-        GrpcServer grpcServer = new GrpcServer(0, new NodeRegistryGrpcService(new NodeRegistry(new SingleTokenValidator(token))));
-        grpcServer.startAsync().awaitRunning();
-
-        try (NodeRegistryClient client = new NodeRegistryClient(GrpcClient.standalone("localhost", grpcServer.getPort()))) {
+        try (NodeRegistryClient client = new NodeRegistryClient(_grpcServer.newStandaloneClient())) {
             // succeed
-            client.registerNode("localhost", 123, token);
+            client.registerNode("localhost", 123, TOKEN);
 
             // fail
             try {
@@ -32,7 +33,7 @@ public class NodeRegistryIntegrationTest {
             }
 
             // succeed
-            client.registerNode("localhost", 1234, token);
+            client.registerNode("localhost", 1234, TOKEN);
         }
 
     }

@@ -5,21 +5,23 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.morethan.tweaky.shared.GrpcClient;
-import io.morethan.tweaky.test.GrpcServer;
+import io.morethan.tweaky.testsupport.GrpcServerRule;
 
+@ExtendWith(MockitoExtension.class)
 public class ConductorIntegrationTest {
+
+    Conductor _conductor = mock(Conductor.class);
+    @RegisterExtension
+    GrpcServerRule _grpcServer = new GrpcServerRule(new ConductorGrpcService(_conductor));
 
     @Test
     void testNodeCount() throws Exception {
-        Conductor conductor = mock(Conductor.class);
-        when(conductor.nodeCount()).thenReturn(23);
-
-        GrpcServer grpcServer = new GrpcServer(0, new ConductorGrpcService(conductor));
-        grpcServer.startAsync().awaitRunning();
-
-        try (ConductorClient client = new ConductorClient(GrpcClient.standalone("localhost", grpcServer.getPort()))) {
+        when(_conductor.nodeCount()).thenReturn(23);
+        try (ConductorClient client = new ConductorClient(_grpcServer.newStandaloneClient())) {
             assertThat(client.nodeCount()).isEqualTo(23);
         }
 

@@ -26,20 +26,21 @@ subprojects {
 
     dependencies {
         compile group: 'com.google.guava', name: 'guava', version: '23.0'
-        
+
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.8.0-alpha2'
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
         compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.0'
 
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.1.0'
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.1.0'
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
         testCompileOnly group: 'org.apiguardian', name: 'apiguardian-api', version: '1.0.0' // Avoid compiler warnings about @API annotations in JUnit code
 
         testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
+        testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.18.3'
+
         testCompile group: 'org.assertj', name:'assertj-core', version:'3.9.0'
     }
-
 
     repositories {
         jcenter()

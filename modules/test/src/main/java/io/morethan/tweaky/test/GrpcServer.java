@@ -40,7 +40,9 @@ public class GrpcServer extends AbstractIdleService {
 
     @Override
     protected void shutDown() throws Exception {
+        LOG.info("Stopping GRPC server...");
         _rpcServer.shutdown();
+        LOG.info("Stopped GRPC server");
     }
 
 }
