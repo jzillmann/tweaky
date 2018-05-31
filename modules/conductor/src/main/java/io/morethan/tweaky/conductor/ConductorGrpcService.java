@@ -3,6 +3,7 @@ package io.morethan.tweaky.conductor;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc;
+import io.morethan.tweaky.conductor.proto.ConductorGrpc.ConductorImplBase;
 import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountReply;
 import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
 import io.morethan.tweaky.shared.Errors;
@@ -10,7 +11,7 @@ import io.morethan.tweaky.shared.Errors;
 /**
  * GRPC service implementation for {@link ConductorGrpc}.
  */
-final class ConductorGrpcService extends ConductorGrpc.ConductorImplBase {
+public final class ConductorGrpcService extends ConductorImplBase {
 
     private final Conductor _conductor;
 

@@ -9,7 +9,7 @@ import io.morethan.tweaky.shared.Errors;
 import io.morethan.tweaky.shared.GrpcClient;
 
 /**
- * A client for {@link ConductorGrpcService}.
+ * A client for {@link ConductorGrpc}.
  */
 public class ConductorClient implements AutoCloseable {
 

@@ -13,6 +13,8 @@ Pieces of a traditional master-node cluster setup with modern technology.
 √- Logging
 √- NodeRegistrationValidator
 √- Junit5 ExternalResource
-- Implement Node registration
+√- Implement Node registration
 - Dagger example
 - ServiceLoader example
+- Example projects:
+    - Distributed Map

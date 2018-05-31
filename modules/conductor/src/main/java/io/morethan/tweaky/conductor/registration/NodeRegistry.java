@@ -13,7 +13,7 @@ import io.morethan.tweaky.conductor.NodeRegistrationValidator;
  */
 public class NodeRegistry {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Conductor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NodeRegistry.class);
 
     private final NodeRegistrationValidator _nodeRegistrationValidator;
 
@@ -28,7 +28,7 @@ public class NodeRegistry {
     }
 
     public void registerNode(String host, int port, String token) {
-        LOG.info("Registering node {} from {}:{}", token, host, port);
+        LOG.info("Registering node '{}' from {}:{}", token, host, port);
         Optional<String> rejectMessage = _nodeRegistrationValidator.accept(host, port, token);
         if (rejectMessage.isPresent()) {
             LOG.warn("Rejecting node: {}", rejectMessage.get());
