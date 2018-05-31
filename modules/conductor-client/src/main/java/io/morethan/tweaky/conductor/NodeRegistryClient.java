@@ -1,8 +1,10 @@
 package io.morethan.tweaky.conductor;
 
+import io.grpc.StatusRuntimeException;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc.NodeRegistryBlockingStub;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeRegistrationRequest;
+import io.morethan.tweaky.shared.Errors;
 import io.morethan.tweaky.shared.GrpcClient;
 
 /**
@@ -19,7 +21,11 @@ public class NodeRegistryClient implements AutoCloseable {
     }
 
     public void registerNode(String host, int port, String token) {
-        _blockingStub.registerNode(NodeRegistrationRequest.newBuilder().setHost(host).setPort(port).setToken(token).build());
+        try {
+            _blockingStub.registerNode(NodeRegistrationRequest.newBuilder().setHost(host).setPort(port).setToken(token).build());
+        } catch (StatusRuntimeException e) {
+            throw Errors.unwrapped(e);
+        }
     }
 
     @Override

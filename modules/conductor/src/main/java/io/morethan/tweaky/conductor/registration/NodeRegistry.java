@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.morethan.tweaky.conductor.Conductor;
-import io.morethan.tweaky.conductor.NodeRegistrationValidator;
 
 /**
  * Takes care of registering nodes for a {@link Conductor}.
@@ -32,7 +31,7 @@ public class NodeRegistry {
         Optional<String> rejectMessage = _nodeRegistrationValidator.accept(host, port, token);
         if (rejectMessage.isPresent()) {
             LOG.warn("Rejecting node: {}", rejectMessage.get());
-            throw new RuntimeException("Rejected node - " + rejectMessage.get());
+            throw new NodeRejectedException("Rejected node - " + rejectMessage.get());
         }
         _registeredNodes++;
     }

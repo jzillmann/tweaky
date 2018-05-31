@@ -2,8 +2,6 @@ package io.morethan.tweaky.conductor.registration;
 
 import java.util.Optional;
 
-import io.morethan.tweaky.conductor.NodeRegistrationValidator;
-
 /**
  * A {@link NodeRegistrationValidator} which is configured with a single token. Nodes need to pass that token in order to be accepted.
  */

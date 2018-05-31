@@ -69,7 +69,11 @@ public class Errors {
         return status.withDescription(cause.getMessage()).asRuntimeException(metadata);
     }
 
-    public static RuntimeException unwrap(StatusRuntimeException statusRuntimeException) {
+    public static RuntimeException unwrapped(StatusRuntimeException statusRuntimeException) {
+        return new RemoteCallFailure(unwrap(statusRuntimeException));
+    }
+
+    private static RuntimeException unwrap(StatusRuntimeException statusRuntimeException) {
         RuntimeException exception = statusRuntimeException.getTrailers().get(CAUSING_EXCEPTION);
         if (exception == null) {
             return statusRuntimeException;

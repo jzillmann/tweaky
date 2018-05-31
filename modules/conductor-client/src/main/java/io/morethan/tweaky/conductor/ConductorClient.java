@@ -27,7 +27,7 @@ public class ConductorClient implements AutoCloseable {
         try {
             return _blockingStub.nodeCount(NodeCountRequest.getDefaultInstance()).getCount();
         } catch (StatusRuntimeException e) {
-            throw new RuntimeException(Errors.unwrap(e));
+            throw Errors.unwrapped(e);
         }
     }
 

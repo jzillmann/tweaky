@@ -24,7 +24,7 @@ public class NodeClient implements AutoCloseable {
         try {
             return _blockingStub.token(NodeTokenRequest.getDefaultInstance()).getToken();
         } catch (StatusRuntimeException e) {
-            throw new RuntimeException(Errors.unwrap(e));
+            throw Errors.unwrapped(e);
         }
     }
 

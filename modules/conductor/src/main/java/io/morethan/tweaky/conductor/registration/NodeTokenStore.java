@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import io.morethan.tweaky.conductor.NodeRegistrationValidator;
-
 /**
  * A {@link NodeRegistrationValidator} which can be configured with a set of allowed tokens. A token can be used only once.
  */

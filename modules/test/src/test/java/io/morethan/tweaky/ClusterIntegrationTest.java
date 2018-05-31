@@ -68,6 +68,7 @@ public class ClusterIntegrationTest {
             } catch (Exception e) {
                 assertThat(e).hasMessageContaining("already used");
             }
+            assertThat(conductorClient.nodeCount()).isEqualTo(2);
         }
     }
 }
