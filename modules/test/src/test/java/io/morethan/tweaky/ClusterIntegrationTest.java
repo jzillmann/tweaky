@@ -10,6 +10,7 @@ import io.morethan.tweaky.conductor.Conductor;
 import io.morethan.tweaky.conductor.ConductorClient;
 import io.morethan.tweaky.conductor.ConductorGrpcService;
 import io.morethan.tweaky.conductor.NodeRegistryClient;
+import io.morethan.tweaky.conductor.registration.HostPortNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistry;
 import io.morethan.tweaky.conductor.registration.NodeRegistryGrpcService;
 import io.morethan.tweaky.conductor.registration.NodeTokenStore;
@@ -24,7 +25,7 @@ public class ClusterIntegrationTest {
     static final String INVALID_TOKEN = "humbug";
 
     NodeTokenStore _nodeTokenStore = new NodeTokenStore();
-    NodeRegistry _nodeRegistry = new NodeRegistry(_nodeTokenStore);
+    NodeRegistry _nodeRegistry = new NodeRegistry(_nodeTokenStore, new HostPortNameProvider());
     @RegisterExtension
     GrpcServerRule _conductorServer = new GrpcServerRule(new ConductorGrpcService(new Conductor(_nodeRegistry)), new NodeRegistryGrpcService(_nodeRegistry));
     @RegisterExtension
@@ -69,6 +70,9 @@ public class ClusterIntegrationTest {
                 assertThat(e).hasMessageContaining("already used");
             }
             assertThat(conductorClient.nodeCount()).isEqualTo(2);
+
+            // TODO register node twice
+            // TODO register node which has no server running
         }
     }
 }
