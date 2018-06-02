@@ -21,6 +21,11 @@ public class NodeTokenStore implements NodeRegistrationValidator {
         _allowedTokens.add(token);
     }
 
+    @Override
+    public void release(String token) {
+        _acceptedTokens.remove(token);
+    }
+
     /**
      * Rejects the node if the token is unknown or was already accepted before.
      */

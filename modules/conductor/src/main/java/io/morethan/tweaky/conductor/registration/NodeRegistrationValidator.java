@@ -20,11 +20,23 @@ public interface NodeRegistrationValidator {
      */
     Optional<String> accept(String host, int port, String token);
 
+    /**
+     * Release the given token, i.e. because the node has been dropped.
+     *
+     * @param token
+     */
+    void release(String token);
+
     public static NodeRegistrationValidator ACCEPT_ALL = new NodeRegistrationValidator() {
 
         @Override
         public Optional<String> accept(String host, int port, String token) {
             return Optional.empty();
+        }
+
+        @Override
+        public void release(String token) {
+            // nothing to do
         }
     };
 }

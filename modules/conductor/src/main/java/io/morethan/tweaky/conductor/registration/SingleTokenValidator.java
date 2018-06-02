@@ -21,4 +21,8 @@ public class SingleTokenValidator implements NodeRegistrationValidator {
         return Optional.empty();
     }
 
+    @Override
+    public void release(String token) {
+        // nothing to do
+    }
 }
