@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Throwables;
 
 import io.morethan.tweaky.conductor.Conductor;
-import io.morethan.tweaky.conductor.NodeAddress;
 import io.morethan.tweaky.conductor.channel.NodeChannel;
 import io.morethan.tweaky.conductor.channel.NodeChannelProvider;
 import io.morethan.tweaky.node.NodeClient;

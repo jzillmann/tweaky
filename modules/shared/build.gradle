@@ -1,3 +1,0 @@
-dependencies {
-    compile group: 'io.grpc', name: 'grpc-core', version: grpcVersion
-}

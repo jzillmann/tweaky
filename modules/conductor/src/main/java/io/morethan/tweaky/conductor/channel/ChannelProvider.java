@@ -8,4 +8,5 @@ import io.grpc.ManagedChannel;
 public interface ChannelProvider {
 
     ManagedChannel get(String host, int port);
+
 }

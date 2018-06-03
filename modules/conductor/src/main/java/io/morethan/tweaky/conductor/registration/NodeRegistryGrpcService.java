@@ -5,7 +5,7 @@ import io.grpc.stub.StreamObserver;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc.NodeRegistryImplBase;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeRegistrationReply;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeRegistrationRequest;
-import io.morethan.tweaky.shared.Errors;
+import io.morethan.tweaky.grpc.Errors;
 
 /**
  * A GRPC service for {@link NodeRegistry}.

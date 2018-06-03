@@ -1,6 +1,7 @@
 package io.morethan.tweaky;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.time.Duration;
 
@@ -47,7 +48,6 @@ public class ClusterIntegrationTest {
         nodeWithInvalidToken.startAsync();
 
         try (ConductorClient conductorClient = new ConductorClient(_conductorServer.newStandaloneClient());) {
-
             Assertions.assertTimeout(Duration.ofMinutes(1), () -> {
                 int nodeCount = 0;
                 do {
@@ -57,6 +57,12 @@ public class ClusterIntegrationTest {
                 } while (nodeCount < 2);
             });
         }
-        assertThat(nodeWithInvalidToken.failureCause()).isNotNull().hasRootCauseInstanceOf(NodeRejectedException.class);
+
+        try {
+            nodeWithInvalidToken.awaitTerminated();
+            fail("should throw exception");
+        } catch (Exception e) {
+            assertThat(e).hasRootCauseInstanceOf(NodeRejectedException.class);
+        }
     }
 }

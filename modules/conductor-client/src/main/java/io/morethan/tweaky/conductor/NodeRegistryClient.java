@@ -4,8 +4,8 @@ import io.grpc.StatusRuntimeException;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc.NodeRegistryBlockingStub;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeRegistrationRequest;
-import io.morethan.tweaky.shared.Errors;
-import io.morethan.tweaky.shared.GrpcClient;
+import io.morethan.tweaky.grpc.Errors;
+import io.morethan.tweaky.grpc.GrpcClient;
 
 /**
  * A client for {@link ConductorGrpcService}.

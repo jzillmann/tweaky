@@ -7,4 +7,7 @@ public interface NodeNameProvider {
 
     String getName(String host, int port, String token);
 
+    public static NodeNameProvider hostPort() {
+        return new HostPortNameProvider();
+    }
 }

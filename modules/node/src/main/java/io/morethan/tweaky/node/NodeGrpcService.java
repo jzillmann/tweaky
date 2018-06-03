@@ -2,11 +2,11 @@ package io.morethan.tweaky.node;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import io.morethan.tweaky.grpc.Errors;
 import io.morethan.tweaky.node.proto.NodeGrpc;
 import io.morethan.tweaky.node.proto.NodeGrpc.NodeImplBase;
 import io.morethan.tweaky.node.proto.NodeProto.NodeTokenReply;
 import io.morethan.tweaky.node.proto.NodeProto.NodeTokenRequest;
-import io.morethan.tweaky.shared.Errors;
 
 /**
  * GRPC service implementation for {@link NodeGrpc}.

@@ -1,4 +1,4 @@
-package io.morethan.tweaky.shared;
+package io.morethan.tweaky.grpc;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,8 +8,6 @@ import java.io.ObjectOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//import org.apache.log4j.Logger;
 
 import io.grpc.Metadata;
 import io.grpc.Metadata.BinaryMarshaller;

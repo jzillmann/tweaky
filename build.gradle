@@ -10,9 +10,13 @@ ext.testResults = file("$buildDir/reports/tests/all")
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.15'
     }
 }
 

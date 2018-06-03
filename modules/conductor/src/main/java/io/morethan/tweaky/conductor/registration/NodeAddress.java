@@ -1,4 +1,4 @@
-package io.morethan.tweaky.conductor;
+package io.morethan.tweaky.conductor.registration;
 
 import com.google.common.base.MoreObjects;
 

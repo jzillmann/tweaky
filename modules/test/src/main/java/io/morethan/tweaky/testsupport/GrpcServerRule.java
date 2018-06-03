@@ -3,7 +3,7 @@ package io.morethan.tweaky.testsupport;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import io.grpc.BindableService;
-import io.morethan.tweaky.shared.GrpcClient;
+import io.morethan.tweaky.grpc.GrpcClient;
 import io.morethan.tweaky.test.GrpcServer;
 
 /**

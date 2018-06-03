@@ -1,0 +1,9 @@
+// Support for using Dagger dependency injection
+
+apply plugin: 'net.ltgt.apt'
+apply plugin: 'net.ltgt.apt-eclipse'
+
+dependencies {
+    compile group: 'com.google.dagger', name: 'dagger', version: '2.16'
+    annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: '2.16'
+}

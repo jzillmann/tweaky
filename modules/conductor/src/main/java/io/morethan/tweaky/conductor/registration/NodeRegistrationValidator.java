@@ -27,16 +27,27 @@ public interface NodeRegistrationValidator {
      */
     void release(String token);
 
-    public static NodeRegistrationValidator ACCEPT_ALL = new NodeRegistrationValidator() {
+    public static NodeTokenStore tokenStore() {
+        return new NodeTokenStore();
+    }
 
-        @Override
-        public Optional<String> accept(String host, int port, String token) {
-            return Optional.empty();
-        }
+    public static NodeRegistrationValidator singleToken(String token) {
+        return new SingleTokenValidator(token);
+    }
 
-        @Override
-        public void release(String token) {
-            // nothing to do
-        }
-    };
+    public static NodeRegistrationValidator acceptAll() {
+        return new NodeRegistrationValidator() {
+
+            @Override
+            public Optional<String> accept(String host, int port, String token) {
+                return Optional.empty();
+            }
+
+            @Override
+            public void release(String token) {
+                // nothing to do
+            }
+        };
+    }
+
 }

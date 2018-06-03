@@ -1,11 +1,11 @@
 package io.morethan.tweaky.node;
 
 import io.grpc.StatusRuntimeException;
+import io.morethan.tweaky.grpc.Errors;
+import io.morethan.tweaky.grpc.GrpcClient;
 import io.morethan.tweaky.node.proto.NodeGrpc;
 import io.morethan.tweaky.node.proto.NodeGrpc.NodeBlockingStub;
 import io.morethan.tweaky.node.proto.NodeProto.NodeTokenRequest;
-import io.morethan.tweaky.shared.Errors;
-import io.morethan.tweaky.shared.GrpcClient;
 
 /**
  * A client for {@link NodeGrpc}.

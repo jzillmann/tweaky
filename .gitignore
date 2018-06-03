@@ -1,3 +1,5 @@
+.apt_generated/
+.factorypath
 .gradle
 .classpath
 .project

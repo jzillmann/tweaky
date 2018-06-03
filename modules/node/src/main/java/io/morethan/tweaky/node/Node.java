@@ -12,7 +12,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.morethan.tweaky.conductor.NodeRegistryClient;
-import io.morethan.tweaky.shared.GrpcClient;
+import io.morethan.tweaky.grpc.GrpcClient;
 
 public class Node extends AbstractIdleService {
 

@@ -1,5 +1,5 @@
 apply from: rootProject.file("gradle/grpc.gradle")
 
 dependencies {
-    compile project(':tweaky-shared')
+    compile project(':tweaky-grpc')
 }

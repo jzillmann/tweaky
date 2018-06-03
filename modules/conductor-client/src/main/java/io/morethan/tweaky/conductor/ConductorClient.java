@@ -5,8 +5,8 @@ import io.morethan.tweaky.conductor.proto.ConductorGrpc;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc.ConductorBlockingStub;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc.ConductorStub;
 import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
-import io.morethan.tweaky.shared.Errors;
-import io.morethan.tweaky.shared.GrpcClient;
+import io.morethan.tweaky.grpc.Errors;
+import io.morethan.tweaky.grpc.GrpcClient;
 
 /**
  * A client for {@link ConductorGrpc}.

@@ -15,10 +15,18 @@ Pieces of a traditional master-node cluster setup with modern technology.
 - √NodeRegistrationValidator
 - √Junit5 ExternalResource
 - √Implement Node registration
-- Dagger example
+- √Dagger example
 - ServiceLoader example
+- Push node-name to node
+
+## Thoughts
+
+- Example projects:
+   - Distributed Map
+   - Task Queue
+- Node Role Support
+   - Conductor assigns role(s) to node on registration
+   - Node starts services based on roles
 - Services
     - Monitoring
     - Monitoring-UI
-- Example projects:
-    - Distributed Map

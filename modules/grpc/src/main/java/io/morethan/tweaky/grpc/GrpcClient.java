@@ -1,4 +1,4 @@
-package io.morethan.tweaky.shared;
+package io.morethan.tweaky.grpc;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.inprocess.InProcessChannelBuilder;
 
 /**
  * An wrapper around {@link ManagedChannel} which abstracts the closing of the channel and thus allows handling of shared or standalone clients in the same way.
@@ -54,6 +55,14 @@ public class GrpcClient implements AutoCloseable {
      */
     public static GrpcClient standalone(String host, int port) {
         return new GrpcClient(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build());
+    }
+
+    /**
+     * @param name
+     * @return a in-process client
+     */
+    public static GrpcClient standaloneInProcess(String name) {
+        return new GrpcClient(InProcessChannelBuilder.forName(name).build());
     }
 
     /**

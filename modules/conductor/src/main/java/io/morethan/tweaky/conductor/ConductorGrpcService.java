@@ -6,7 +6,7 @@ import io.morethan.tweaky.conductor.proto.ConductorGrpc;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc.ConductorImplBase;
 import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountReply;
 import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
-import io.morethan.tweaky.shared.Errors;
+import io.morethan.tweaky.grpc.Errors;
 
 /**
  * GRPC service implementation for {@link ConductorGrpc}.

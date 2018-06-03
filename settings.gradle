@@ -1,6 +1,6 @@
 rootProject.name = 'tweaky'
 
-module('shared')
+module('grpc')
 module('conductor')
 module('conductor-client')
 module('node')

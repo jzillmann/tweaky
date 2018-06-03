@@ -1,3 +1,5 @@
+// Support for generating GRPC services and clients
+
 apply plugin: 'com.google.protobuf'
 
 sourceSets {
