@@ -5,7 +5,6 @@ module('conductor')
 module('conductor-client')
 module('node')
 module('node-client')
-module('client')
 module('test')
 
 def module(String shortName) {
