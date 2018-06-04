@@ -1,4 +1,4 @@
-package io.morethan.tweaky.grpc;
+package io.morethan.tweaky.grpc.server;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;

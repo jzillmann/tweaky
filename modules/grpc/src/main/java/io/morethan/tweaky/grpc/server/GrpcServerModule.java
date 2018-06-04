@@ -1,4 +1,4 @@
-package io.morethan.tweaky.grpc;
+package io.morethan.tweaky.grpc.server;
 
 import java.util.Set;
 

@@ -10,9 +10,9 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.conductor.registration.NodeRegistry;
-import io.morethan.tweaky.grpc.GrpcServer;
-import io.morethan.tweaky.grpc.GrpcServerModule;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
+import io.morethan.tweaky.grpc.server.GrpcServer;
+import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
 class ConductorComponentTest {
 

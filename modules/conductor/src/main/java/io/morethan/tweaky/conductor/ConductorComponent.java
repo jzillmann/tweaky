@@ -8,8 +8,8 @@ import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationModule;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.conductor.registration.NodeRegistry;
-import io.morethan.tweaky.grpc.GrpcServer;
-import io.morethan.tweaky.grpc.GrpcServerModule;
+import io.morethan.tweaky.grpc.server.GrpcServer;
+import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
 /**
  * Main component for conductor server component. Use the

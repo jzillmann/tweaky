@@ -2,7 +2,7 @@ package io.morethan.tweaky.grpc.client;
 
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.morethan.tweaky.grpc.GrpcInProcessServerModule;
+import io.morethan.tweaky.grpc.server.GrpcInProcessServerModule;
 
 /**
  * A {@link ChannelProvider} connecting to a in-process server.
