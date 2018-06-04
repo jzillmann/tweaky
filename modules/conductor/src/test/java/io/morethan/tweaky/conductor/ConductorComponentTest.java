@@ -6,12 +6,13 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.util.concurrent.Service.State;
 
+import io.grpc.inprocess.InProcessChannelBuilder;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.conductor.registration.NodeRegistry;
-import io.morethan.tweaky.grpc.GrpcClient;
 import io.morethan.tweaky.grpc.GrpcServer;
 import io.morethan.tweaky.grpc.GrpcServerModule;
+import io.morethan.tweaky.grpc.client.ClosableChannel;
 
 class ConductorComponentTest {
 
@@ -24,31 +25,27 @@ class ConductorComponentTest {
                 .build();
 
         NodeRegistry nodeRegistry = conductorCompenent.nodeRegistry();
-        Conductor conductor = conductorCompenent.conductor();
         GrpcServer conductorServer = conductorCompenent.conductorServer();
         assertThat(nodeRegistry).isNotNull();
-        assertThat(conductor).isNotNull();
         assertThat(conductorServer).isNotNull();
 
         // check singletons
         assertThat(nodeRegistry).isSameAs(conductorCompenent.nodeRegistry());
-        assertThat(conductor).isSameAs(conductorCompenent.conductor());
         assertThat(conductorServer).isSameAs(conductorCompenent.conductorServer());
 
         // check state
         assertThat(nodeRegistry.registeredNodes()).isEqualTo(0);
-        assertThat(conductor.nodeCount()).isEqualTo(0);
         assertThat(conductorServer.state()).isEqualTo(State.NEW);
 
         // start server
         conductorCompenent.conductorServer().startAsync().awaitRunning();
         assertThat(nodeRegistry.registeredNodes()).isEqualTo(0);
-        assertThat(conductor.nodeCount()).isEqualTo(0);
         assertThat(conductorServer.state()).isEqualTo(State.RUNNING);
 
         // talk to server
-        try (ConductorClient conductorClient = new ConductorClient(GrpcClient.standaloneInProcess("server"))) {
-            assertThat(conductorClient.nodeCount()).isEqualTo(0);
+        try (ClosableChannel channel = ClosableChannel.of(InProcessChannelBuilder.forName("server").build());) {
+            ConductorClient conductorClient = ConductorClient.on(channel);
+            assertThat(conductorClient.serverServices()).isNotEmpty();
         }
 
         // stop server

@@ -1,11 +1,17 @@
 package io.morethan.tweaky.conductor;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import dagger.Lazy;
+import io.grpc.BindableService;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc.ConductorImplBase;
-import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountReply;
-import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
+import io.morethan.tweaky.conductor.proto.ConductorProto.ServerServicesReply;
+import io.morethan.tweaky.conductor.proto.ConductorProto.ServerServicesRequest;
 import io.morethan.tweaky.grpc.Errors;
 
 /**
@@ -13,16 +19,17 @@ import io.morethan.tweaky.grpc.Errors;
  */
 public final class ConductorGrpcService extends ConductorImplBase {
 
-    private final Conductor _conductor;
+    private final Lazy<Set<BindableService>> _bindableServices;
 
-    public ConductorGrpcService(Conductor conductor) {
-        _conductor = conductor;
+    public ConductorGrpcService(Lazy<Set<BindableService>> bindableServices) {
+        _bindableServices = bindableServices;
     }
 
     @Override
-    public void nodeCount(NodeCountRequest request, StreamObserver<NodeCountReply> responseObserver) {
+    public void serverServices(ServerServicesRequest request, StreamObserver<ServerServicesReply> responseObserver) {
         try {
-            responseObserver.onNext(NodeCountReply.newBuilder().setCount(_conductor.nodeCount()).build());
+            List<String> serviceNames = _bindableServices.get().stream().map((service) -> service.bindService().getServiceDescriptor().getName()).collect(Collectors.toList());
+            responseObserver.onNext(ServerServicesReply.newBuilder().addAllName(serviceNames).build());
             responseObserver.onCompleted();
         } catch (RuntimeException e) {
             responseObserver.onError(Errors.newRpcError(Status.INTERNAL, e));

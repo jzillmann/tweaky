@@ -77,7 +77,7 @@ class NodeRegistryTest {
         when(nodeClient.token()).thenReturn(token);
 
         NodeChannel nodeChannel = mock(NodeChannel.class, RETURNS_DEEP_STUBS);
-        when(nodeChannel.open()).thenReturn(nodeClient);
+        when(nodeChannel.nodeClient()).thenReturn(nodeClient);
         when(channelProvider.get(host, port)).thenReturn(nodeChannel);
     }
 

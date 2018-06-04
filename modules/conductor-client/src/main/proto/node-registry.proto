@@ -6,6 +6,7 @@ option java_multiple_files = false;
 
 service NodeRegistry {
   rpc RegisterNode (NodeRegistrationRequest) returns (NodeRegistrationReply);
+  rpc NodeCount (NodeCountRequest) returns (NodeCountReply);
 }
 
 message NodeRegistrationRequest {
@@ -13,5 +14,9 @@ message NodeRegistrationRequest {
     int32 port = 2;
     string token =3;
 }
-
 message NodeRegistrationReply {}
+
+message NodeCountRequest {}
+message NodeCountReply {
+    int32 count = 1;
+}

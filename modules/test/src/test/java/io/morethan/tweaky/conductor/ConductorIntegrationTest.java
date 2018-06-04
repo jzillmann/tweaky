@@ -1,29 +1,38 @@
 package io.morethan.tweaky.conductor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.morethan.tweaky.testsupport.GrpcServerRule;
+import io.morethan.tweaky.conductor.proto.ConductorGrpc;
+import io.morethan.tweaky.conductor.registration.NodeNameProvider;
+import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
+import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc;
+import io.morethan.tweaky.grpc.GrpcServer;
+import io.morethan.tweaky.grpc.GrpcServerModule;
+import io.morethan.tweaky.grpc.client.ChannelProvider;
+import io.morethan.tweaky.grpc.client.ClosableChannel;
+import io.morethan.tweaky.testsupport.ShutdownHelper;
 
-@ExtendWith(MockitoExtension.class)
 public class ConductorIntegrationTest {
 
-    Conductor _conductor = mock(Conductor.class);
     @RegisterExtension
-    GrpcServerRule _grpcServer = new GrpcServerRule(new ConductorGrpcService(_conductor));
+    ShutdownHelper _shutdownHelper = new ShutdownHelper();
 
     @Test
-    void testNodeCount() throws Exception {
-        when(_conductor.nodeCount()).thenReturn(23);
-        try (ConductorClient client = new ConductorClient(_grpcServer.newStandaloneClient())) {
-            assertThat(client.nodeCount()).isEqualTo(23);
-        }
+    void testServices() throws Exception {
+        GrpcServer conductorServer = _shutdownHelper.register(ConductorComponent.builder()
+                .grpcServerModule(GrpcServerModule.plaintext(0))
+                .nodeNameProvider(NodeNameProvider.hostPort())
+                .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
+                .build()
+                .conductorServer());
+        conductorServer.startAsync().awaitRunning();
 
+        try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", conductorServer.getPort()));) {
+            assertThat(ConductorClient.on(channel).serverServices()).containsOnly(ConductorGrpc.SERVICE_NAME, NodeRegistryGrpc.SERVICE_NAME);
+            assertThat(NodeRegistryClient.on(channel).nodeCount()).isEqualTo(0);
+        }
     }
 }

@@ -3,9 +3,12 @@ package io.morethan.tweaky.grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.morethan.tweaky.grpc.client.InProcessChannelProvider;
 
 /**
  * A {@link GrpcServerModule} which creates a in-process {@link Server}. Useful for testing.
+ *
+ * @see InProcessChannelProvider for client creation
  */
 public class GrpcInProcessServerModule extends GrpcServerModule {
 

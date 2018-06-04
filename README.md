@@ -16,7 +16,8 @@ Pieces of a traditional master-node cluster setup with modern technology.
 - √Junit5 ExternalResource
 - √Implement Node registration
 - √Dagger example
-- ServiceLoader example
+- NodeAcceptor
+- Dagger for nodes
 - Push node-name to node
 
 ## Thoughts

@@ -1,10 +1,10 @@
-package io.morethan.tweaky.conductor.channel;
+package io.morethan.tweaky.grpc.client;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 /**
- * A {@link NodeChannelProvider} which provides a simple plaintext (un-secure) channel.
+ * A {@link ChannelProvider} which provides a simple plaintext (un-secure) channel.
  */
 public class PlaintextChannelProvider implements ChannelProvider {
 

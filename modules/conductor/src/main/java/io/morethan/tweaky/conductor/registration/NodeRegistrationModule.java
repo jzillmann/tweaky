@@ -4,10 +4,10 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.morethan.tweaky.conductor.channel.ChannelProvider;
 import io.morethan.tweaky.conductor.channel.DefaulftNodeChannelProvider;
 import io.morethan.tweaky.conductor.channel.NodeChannelProvider;
-import io.morethan.tweaky.conductor.channel.PlaintextChannelProvider;
+import io.morethan.tweaky.grpc.client.ChannelProvider;
+import io.morethan.tweaky.grpc.client.PlaintextChannelProvider;
 
 @Module
 public class NodeRegistrationModule {

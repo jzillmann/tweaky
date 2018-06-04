@@ -1,38 +1,35 @@
 package io.morethan.tweaky.conductor;
 
+import java.util.List;
+
+import io.grpc.Channel;
 import io.grpc.StatusRuntimeException;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc;
 import io.morethan.tweaky.conductor.proto.ConductorGrpc.ConductorBlockingStub;
-import io.morethan.tweaky.conductor.proto.ConductorGrpc.ConductorStub;
-import io.morethan.tweaky.conductor.proto.ConductorProto.NodeCountRequest;
+import io.morethan.tweaky.conductor.proto.ConductorProto.ServerServicesRequest;
 import io.morethan.tweaky.grpc.Errors;
-import io.morethan.tweaky.grpc.GrpcClient;
 
 /**
  * A client for {@link ConductorGrpc}.
  */
-public class ConductorClient implements AutoCloseable {
+public class ConductorClient {
 
-    private final GrpcClient _grpcClient;
     private final ConductorBlockingStub _blockingStub;
-    private final ConductorStub _asyncStub;
 
-    public ConductorClient(GrpcClient grpcClient) {
-        _grpcClient = grpcClient;
-        _blockingStub = grpcClient.createStub(ConductorGrpc::newBlockingStub);
-        _asyncStub = grpcClient.createStub(ConductorGrpc::newStub);
+    private ConductorClient(ConductorBlockingStub blockingStub) {
+        _blockingStub = blockingStub;
     }
 
-    public int nodeCount() {
+    public List<String> serverServices() {
         try {
-            return _blockingStub.nodeCount(NodeCountRequest.getDefaultInstance()).getCount();
+            return _blockingStub.serverServices(ServerServicesRequest.getDefaultInstance()).getNameList();
         } catch (StatusRuntimeException e) {
             throw Errors.unwrapped(e);
         }
     }
 
-    @Override
-    public void close() {
-        _grpcClient.close();
+    public static ConductorClient on(Channel channel) {
+        return new ConductorClient(ConductorGrpc.newBlockingStub(channel));
     }
+
 }

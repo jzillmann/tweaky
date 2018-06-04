@@ -1,6 +1,7 @@
 package io.morethan.tweaky.conductor.channel;
 
 import io.grpc.ManagedChannel;
+import io.morethan.tweaky.grpc.client.ChannelProvider;
 
 /**
  * Default {@link NodeChannelProvider} constructing {@link ManagedChannel} with help of a given {@link ChannelProvider}.

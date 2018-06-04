@@ -5,10 +5,10 @@ option java_outer_classname = "ConductorProto";
 option java_multiple_files = false;
 
 service Conductor {
-  rpc NodeCount (NodeCountRequest) returns (NodeCountReply);
+  rpc ServerServices (ServerServicesRequest) returns (ServerServicesReply);
 }
 
-message NodeCountRequest {}
-message NodeCountReply {
-    int32 count = 1;
+message ServerServicesRequest {}
+message ServerServicesReply {
+    repeated string name = 1;
 }

@@ -20,8 +20,6 @@ public interface ConductorComponent {
 
     NodeRegistry nodeRegistry();
 
-    Conductor conductor();
-
     GrpcServer conductorServer();
 
     public static Builder builder() {

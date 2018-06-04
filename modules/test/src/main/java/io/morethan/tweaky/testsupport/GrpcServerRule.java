@@ -3,7 +3,8 @@ package io.morethan.tweaky.testsupport;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import io.grpc.BindableService;
-import io.morethan.tweaky.grpc.GrpcClient;
+import io.grpc.ManagedChannel;
+import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.test.GrpcServer;
 
 /**
@@ -31,8 +32,8 @@ public class GrpcServerRule extends ExternalResource {
         _grpcServer.stopAsync().awaitTerminated();
     }
 
-    public GrpcClient newStandaloneClient() {
-        return GrpcClient.standalone("localhost", _grpcServer.getPort());
+    public ManagedChannel newChannel() {
+        return ChannelProvider.plaintext().get("localhost", _grpcServer.getPort());
     }
 
 }

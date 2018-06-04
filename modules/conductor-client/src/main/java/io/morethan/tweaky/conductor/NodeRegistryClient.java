@@ -1,23 +1,22 @@
 package io.morethan.tweaky.conductor;
 
+import io.grpc.Channel;
 import io.grpc.StatusRuntimeException;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc.NodeRegistryBlockingStub;
+import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeCountRequest;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeRegistrationRequest;
 import io.morethan.tweaky.grpc.Errors;
-import io.morethan.tweaky.grpc.GrpcClient;
 
 /**
  * A client for {@link ConductorGrpcService}.
  */
-public class NodeRegistryClient implements AutoCloseable {
+public class NodeRegistryClient {
 
-    private final GrpcClient _grpcClient;
     private final NodeRegistryBlockingStub _blockingStub;
 
-    public NodeRegistryClient(GrpcClient grpcClient) {
-        _grpcClient = grpcClient;
-        _blockingStub = grpcClient.createStub(NodeRegistryGrpc::newBlockingStub);
+    private NodeRegistryClient(NodeRegistryBlockingStub blockingStub) {
+        _blockingStub = blockingStub;
     }
 
     public void registerNode(String host, int port, String token) {
@@ -28,8 +27,15 @@ public class NodeRegistryClient implements AutoCloseable {
         }
     }
 
-    @Override
-    public void close() {
-        _grpcClient.close();
+    public int nodeCount() {
+        try {
+            return _blockingStub.nodeCount(NodeCountRequest.getDefaultInstance()).getCount();
+        } catch (StatusRuntimeException e) {
+            throw Errors.unwrapped(e);
+        }
+    }
+
+    public static NodeRegistryClient on(Channel channel) {
+        return new NodeRegistryClient(NodeRegistryGrpc.newBlockingStub(channel));
     }
 }

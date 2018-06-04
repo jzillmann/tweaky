@@ -9,13 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 
-import io.morethan.tweaky.conductor.Conductor;
 import io.morethan.tweaky.conductor.channel.NodeChannel;
 import io.morethan.tweaky.conductor.channel.NodeChannelProvider;
-import io.morethan.tweaky.node.NodeClient;
 
 /**
- * Takes care of registering nodes for a {@link Conductor}.
+ * Takes care of registering nodes for a conductor.
  */
 public class NodeRegistry {
 
@@ -55,9 +53,7 @@ public class NodeRegistry {
         String remoteToken;
         try {
             nodeChannel = _nodeChannelProvider.get(host, port);
-            try (NodeClient nodeClient = nodeChannel.open()) {
-                remoteToken = nodeClient.token();
-            }
+            remoteToken = nodeChannel.nodeClient().token();
         } catch (Exception e) {
             _registrationValidator.release(token);
             LOG.warn("Failed to establish channel to node " + nodeId, e);

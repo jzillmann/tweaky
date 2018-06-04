@@ -2,10 +2,8 @@ package io.morethan.tweaky.conductor.registration;
 
 import java.util.Optional;
 
-import io.morethan.tweaky.conductor.Conductor;
-
 /**
- * Responsible for verifying that a node, which attempts to register on the {@link Conductor} is allowed to join.
+ * Responsible for verifying that a node, which attempts to register on the conductor is allowed to join.
  */
 public interface NodeRegistrationValidator {
 

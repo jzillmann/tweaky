@@ -1,7 +1,10 @@
 package io.morethan.tweaky.conductor;
 
+import java.util.Set;
+
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
@@ -16,8 +19,8 @@ public class ConductorModule {
     @Provides
     @Singleton
     @IntoSet
-    BindableService conductorService(Conductor conductor) {
-        return new ConductorGrpcService(conductor);
+    BindableService conductorService(Lazy<Set<BindableService>> bindableServices) {
+        return new ConductorGrpcService(bindableServices);
     }
 
     @Provides
@@ -27,9 +30,4 @@ public class ConductorModule {
         return new NodeRegistryGrpcService(nodeRegistry);
     }
 
-    @Provides
-    @Singleton
-    Conductor conductor(NodeRegistry nodeRegistry) {
-        return new Conductor(nodeRegistry);
-    }
 }

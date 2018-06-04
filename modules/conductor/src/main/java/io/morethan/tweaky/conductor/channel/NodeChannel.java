@@ -1,7 +1,6 @@
 package io.morethan.tweaky.conductor.channel;
 
 import io.grpc.ManagedChannel;
-import io.morethan.tweaky.grpc.GrpcClient;
 import io.morethan.tweaky.node.NodeClient;
 
 public class NodeChannel {
@@ -16,8 +15,8 @@ public class NodeChannel {
         return _managedChannel;
     }
 
-    public NodeClient open() {
-        return new NodeClient(GrpcClient.shared(_managedChannel));
+    public NodeClient nodeClient() {
+        return NodeClient.on(_managedChannel);
     }
 
 }

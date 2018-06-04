@@ -12,7 +12,6 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.morethan.tweaky.conductor.NodeRegistryClient;
-import io.morethan.tweaky.grpc.GrpcClient;
 
 public class Node extends AbstractIdleService {
 
@@ -42,9 +41,7 @@ public class Node extends AbstractIdleService {
 
         // Register on conductor
         _conductorChannel = ManagedChannelBuilder.forAddress(_conductorHost, _conductorPort).usePlaintext().build();
-        try (NodeRegistryClient nodeRegistryClient = new NodeRegistryClient(GrpcClient.shared(_conductorChannel));) {
-            nodeRegistryClient.registerNode(InetAddress.getLocalHost().getHostName(), _nodeServer.getPort(), _token);
-        }
+        NodeRegistryClient.on(_conductorChannel).registerNode(InetAddress.getLocalHost().getHostName(), _nodeServer.getPort(), _token);
     }
 
     @Override
