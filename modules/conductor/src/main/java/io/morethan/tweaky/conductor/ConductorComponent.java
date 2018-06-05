@@ -8,13 +8,14 @@ import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationModule;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.conductor.registration.NodeRegistry;
+import io.morethan.tweaky.grpc.GrpcServicesModule;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
 /**
  * Main component for conductor server component. Use the
  */
-@Component(modules = { ConductorModule.class, NodeRegistrationModule.class })
+@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServicesModule.class })
 @Singleton
 public interface ConductorComponent {
 
@@ -36,6 +37,8 @@ public interface ConductorComponent {
          * @return
          */
         Builder grpcServerModule(GrpcServerModule grpcServerModule);
+
+        Builder grpcServiceModule(GrpcServicesModule grpcServiceModule);
 
         @BindsInstance
         Builder nodeRegistrationValidator(NodeRegistrationValidator nodeRegistrationValidator);
