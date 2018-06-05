@@ -1,6 +1,6 @@
 apply from: rootProject.file("gradle/dagger.gradle")
 
 dependencies {
-    compile project(':tweaky-conductor-client')
-    compile project(':tweaky-node-client')
+    compile project(':tweaky-conductor-shared')
+    compile project(':tweaky-node-shared')
 }

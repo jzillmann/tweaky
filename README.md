@@ -31,3 +31,6 @@ Pieces of a traditional master-node cluster setup with modern technology.
 - Services
     - Monitoring
     - Monitoring-UI
+- Utils
+    - CallTracing (from client, to conductor including all node calls. Use metadata. Check https://github.com/grpc-ecosystem/grpc-opentracing)
+    - Profiling (custom for apps. just have generic proto files available. Nodes can track their individual work steps)

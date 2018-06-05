@@ -1,5 +1,5 @@
 dependencies {
     compile project(':tweaky-grpc')
-    compile project(':tweaky-node-client')
-    compile project(':tweaky-conductor-client')
+    compile project(':tweaky-node-shared')
+    compile project(':tweaky-conductor-shared')
 }

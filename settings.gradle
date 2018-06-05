@@ -2,9 +2,9 @@ rootProject.name = 'tweaky'
 
 module('grpc')
 module('conductor')
-module('conductor-client')
+module('conductor-shared')
 module('node')
-module('node-client')
+module('node-shared')
 module('test')
 
 def module(String shortName) {
