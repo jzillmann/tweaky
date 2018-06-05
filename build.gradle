@@ -24,6 +24,7 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
+    apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -71,6 +72,30 @@ subprojects {
         ignoreFailures project.hasProperty('ignoreTestFailures')
     }
     
+    publishing {
+        repositories {
+            maven {
+                url localMavenRepository
+            }
+        }
+
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                if (project.name.equals('yarn-starter-yarn') || project.name.equals('yarn-starter-http')) {
+                   // TODO this doesn't generate an own pom file so consumers have to disable transitve dependencies
+                   artifact shadowJar
+                }
+            }
+        }
+    }
+
+    task sourcesJar(type:Jar){
+        classifier = "sources"
+        from sourceSets.main.allSource
+    }
+
 }
 
 task clean(group: 'Build', description: 'Deletes the build directory.') {
