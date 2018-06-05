@@ -13,6 +13,7 @@ import io.grpc.Metadata;
 import io.grpc.Metadata.BinaryMarshaller;
 import io.grpc.Metadata.Key;
 import io.grpc.Status;
+import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
 
 /**
@@ -67,14 +68,28 @@ public class Errors {
         return status.withDescription(cause.getMessage()).asRuntimeException(metadata);
     }
 
-    public static RuntimeException unwrapped(StatusRuntimeException statusRuntimeException) {
-        return new RemoteCallFailure(unwrap(statusRuntimeException));
+    public static RuntimeException unwrapped(Throwable throwable) {
+        if (throwable instanceof StatusRuntimeException) {
+            return unwrapped((StatusRuntimeException) throwable);
+        }
+        if (throwable instanceof StatusException) {
+            return unwrapped((StatusException) throwable);
+        }
+        return new RemoteCallFailure(throwable);
     }
 
-    private static RuntimeException unwrap(StatusRuntimeException statusRuntimeException) {
-        RuntimeException exception = statusRuntimeException.getTrailers().get(CAUSING_EXCEPTION);
+    public static RuntimeException unwrapped(StatusException exception) {
+        return new RemoteCallFailure(unwrap(exception, exception.getTrailers()));
+    }
+
+    public static RuntimeException unwrapped(StatusRuntimeException exception) {
+        return new RemoteCallFailure(unwrap(exception, exception.getTrailers()));
+    }
+
+    private static Throwable unwrap(Throwable throwable, Metadata metadata) {
+        RuntimeException exception = metadata.get(CAUSING_EXCEPTION);
         if (exception == null) {
-            return statusRuntimeException;
+            return throwable;
         }
         return exception;
     }
