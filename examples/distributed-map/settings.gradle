@@ -1,0 +1,11 @@
+rootProject.name = 'distributed-map'
+
+module('shared')
+module('gateway')
+module('node')
+
+def module(String shortName) {
+    def name = ":distributed-map-$shortName"
+    include name
+    project(name).projectDir = file("$shortName")
+}

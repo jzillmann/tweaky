@@ -1,0 +1,5 @@
+apply from: rootProject.file("../../gradle/grpc.gradle")
+
+dependencies {
+    compile group: 'io.morethan.tweaky', name: 'tweaky-grpc', version: tweakyVersion
+}

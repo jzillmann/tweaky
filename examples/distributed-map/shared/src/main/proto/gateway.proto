@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "io.morethan.tweaky.examples.dm.gateway.proto";
+option java_outer_classname = "DmGatewayProto";
+option java_multiple_files = false;
+
+import "shared.proto";
+
+service Gateway {
+  rpc Put (stream PutRequest) returns (PutReply);
+  rpc Get (GetRequest) returns (GetReply);
+}
