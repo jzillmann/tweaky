@@ -16,6 +16,7 @@ Pieces of a traditional master-node cluster setup with modern technology.
 - √Junit5 ExternalResource
 - √Implement Node registration
 - √Dagger example
+- Remove log4j impl from pom.xml
 - NodeAcceptor
 - Dagger for nodes
 - Push node-name to node

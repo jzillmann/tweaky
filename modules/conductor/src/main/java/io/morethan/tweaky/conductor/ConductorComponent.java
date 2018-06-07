@@ -15,7 +15,7 @@ import io.morethan.tweaky.grpc.server.GrpcServerModule;
 /**
  * Main component for conductor server component. Use the
  */
-@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServicesModule.class })
+@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServicesModule.class, ConductorAppModule.class })
 @Singleton
 public interface ConductorComponent {
 
@@ -39,6 +39,8 @@ public interface ConductorComponent {
         Builder grpcServerModule(GrpcServerModule grpcServerModule);
 
         Builder grpcServiceModule(GrpcServicesModule grpcServiceModule);
+
+        Builder appModule(ConductorAppModule appModule);
 
         @BindsInstance
         Builder nodeRegistrationValidator(NodeRegistrationValidator nodeRegistrationValidator);
