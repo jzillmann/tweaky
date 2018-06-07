@@ -15,33 +15,18 @@ import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
-// Dagger composition : 2 possibilities
-// - (A) Have that Set<BindableService> services(ConductorContext context) in an abstract module
-//      - In there, we can create another component with the apps object graph, injecting the context
-//      - (+) Control over plug-ability / well defined API (maybe easier for the user to grasp, but also more restricted)
-//      - (-) Design effort of plug-ability
-//      - (-) Hacky dagger usage (a lot of context dependencies or have a context de-construction module)
-// - (B) Re-do the component, just re-use the modules
-//      - See if we can extend ConductorComponent
-//      - (+) Full power of dagger at your hand
-//      - (-) Harder to get started, Repeating stuff already done
-//
-
 class GatewayIntegrationTest {
 
     // TODO shutdown helper ?
 
     @Test
     void test() {
-        ConductorComponent conductorComponent = ConductorComponent.builder()
+        ConductorComponent conductorComponent = GatewayComponent.builder()
                 .grpcServerModule(GrpcServerModule.plaintext(0))
-                // .grpcServiceModule(new GrpcServicesModule().with(new GatewayGrpcService()))
-                .appModule(new GatewayModule())
                 .nodeNameProvider(NodeNameProvider.hostPort())
                 .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
                 .build();
-        GrpcServer conductorServer = conductorComponent
-                .conductorServer();
+        GrpcServer conductorServer = conductorComponent.conductorServer();
         conductorServer.startAsync().awaitRunning();
 
         try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", conductorServer.getPort()));) {
