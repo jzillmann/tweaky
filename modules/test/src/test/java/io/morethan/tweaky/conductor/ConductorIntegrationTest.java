@@ -27,7 +27,7 @@ public class ConductorIntegrationTest {
                 .nodeNameProvider(NodeNameProvider.hostPort())
                 .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
                 .build()
-                .conductorServer());
+                .server());
         conductorServer.startAsync().awaitRunning();
 
         try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", conductorServer.getPort()));) {

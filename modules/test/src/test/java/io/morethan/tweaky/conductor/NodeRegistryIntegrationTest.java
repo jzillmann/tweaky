@@ -2,10 +2,12 @@ package io.morethan.tweaky.conductor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import dagger.Lazy;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.conductor.registration.NodeTokenStore;
@@ -18,6 +20,7 @@ import io.morethan.tweaky.node.NodeGrpcService;
 import io.morethan.tweaky.testsupport.GrpcServerRule;
 import io.morethan.tweaky.testsupport.ShutdownHelper;
 
+@SuppressWarnings("unchecked")
 public class NodeRegistryIntegrationTest {
 
     static final String VALID_TOKEN_1 = "node1";
@@ -28,13 +31,13 @@ public class NodeRegistryIntegrationTest {
     @RegisterExtension
     ShutdownHelper _shutdownHelper = new ShutdownHelper();
     @RegisterExtension
-    GrpcServerRule _node1Server = new GrpcServerRule(new NodeGrpcService(VALID_TOKEN_1));
+    GrpcServerRule _node1Server = new GrpcServerRule(new NodeGrpcService(VALID_TOKEN_1, mock(Lazy.class)));
     @RegisterExtension
-    GrpcServerRule _node2Server = new GrpcServerRule(new NodeGrpcService(VALID_TOKEN_2));
+    GrpcServerRule _node2Server = new GrpcServerRule(new NodeGrpcService(VALID_TOKEN_2, mock(Lazy.class)));
     @RegisterExtension
-    GrpcServerRule _node3InvalidServer = new GrpcServerRule(new NodeGrpcService(INVALID_TOKEN));
+    GrpcServerRule _node3InvalidServer = new GrpcServerRule(new NodeGrpcService(INVALID_TOKEN, mock(Lazy.class)));
     @RegisterExtension
-    GrpcServerRule _node3ValidServer = new GrpcServerRule(new NodeGrpcService(VALID_TOKEN_3));
+    GrpcServerRule _node3ValidServer = new GrpcServerRule(new NodeGrpcService(VALID_TOKEN_3, mock(Lazy.class)));
 
     @Test
     void testTokenStore() throws Exception {
@@ -49,7 +52,7 @@ public class NodeRegistryIntegrationTest {
                         .nodeNameProvider(NodeNameProvider.hostPort())
                         .nodeRegistrationValidator(tokenStore)
                         .build()
-                        .conductorServer());
+                        .server());
         conductorServer.startAsync().awaitRunning();
 
         try (ClosableChannel conductorChannel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", conductorServer.getPort()))) {

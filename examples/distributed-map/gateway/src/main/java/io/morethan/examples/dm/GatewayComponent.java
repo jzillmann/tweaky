@@ -7,8 +7,9 @@ import io.morethan.tweaky.conductor.ConductorComponent;
 import io.morethan.tweaky.conductor.ConductorModule;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationModule;
 import io.morethan.tweaky.grpc.GrpcServicesModule;
+import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
-@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServicesModule.class, GatewayModule.class })
+@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServerModule.class, GrpcServicesModule.class, GatewayModule.class })
 @Singleton
 public interface GatewayComponent extends ConductorComponent {
 

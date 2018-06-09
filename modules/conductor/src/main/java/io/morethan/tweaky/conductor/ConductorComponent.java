@@ -7,21 +7,18 @@ import dagger.Component;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationModule;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
-import io.morethan.tweaky.conductor.registration.NodeRegistry;
 import io.morethan.tweaky.grpc.GrpcServicesModule;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
 /**
- * Main component for conductor server component. Use the
+ * Main component of the conductor.
  */
-@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServicesModule.class })
+@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServerModule.class, GrpcServicesModule.class })
 @Singleton
 public interface ConductorComponent {
 
-    NodeRegistry nodeRegistry();
-
-    GrpcServer conductorServer();
+    GrpcServer server();
 
     public static Builder builder() {
         return DaggerConductorComponent.builder();
@@ -38,11 +35,29 @@ public interface ConductorComponent {
          */
         Builder grpcServerModule(GrpcServerModule grpcServerModule);
 
+        /**
+         * Specify additional GRPC services for registration. Optional.
+         * 
+         * @param grpcServiceModule
+         * @return
+         */
         Builder grpcServiceModule(GrpcServicesModule grpcServiceModule);
 
+        /**
+         * A custom {@link NodeRegistrationValidator}. Required.
+         * 
+         * @param nodeRegistrationValidator
+         * @return
+         */
         @BindsInstance
         Builder nodeRegistrationValidator(NodeRegistrationValidator nodeRegistrationValidator);
 
+        /**
+         * A custom {@link NodeNameProvider}. Required.
+         * 
+         * @param nodeNameProvider
+         * @return
+         */
         @BindsInstance
         Builder nodeNameProvider(NodeNameProvider nodeNameProvider);
 

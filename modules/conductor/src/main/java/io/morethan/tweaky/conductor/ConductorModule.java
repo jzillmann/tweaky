@@ -11,9 +11,8 @@ import dagger.multibindings.IntoSet;
 import io.grpc.BindableService;
 import io.morethan.tweaky.conductor.registration.NodeRegistry;
 import io.morethan.tweaky.conductor.registration.NodeRegistryGrpcService;
-import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
-@Module(includes = { GrpcServerModule.class })
+@Module
 public class ConductorModule {
 
     @Provides

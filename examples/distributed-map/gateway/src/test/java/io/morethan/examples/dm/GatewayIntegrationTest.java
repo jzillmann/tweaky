@@ -26,10 +26,10 @@ class GatewayIntegrationTest {
                 .nodeNameProvider(NodeNameProvider.hostPort())
                 .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
                 .build();
-        GrpcServer conductorServer = conductorComponent.conductorServer();
-        conductorServer.startAsync().awaitRunning();
+        GrpcServer server = conductorComponent.server();
+        server.startAsync().awaitRunning();
 
-        try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", conductorServer.getPort()));) {
+        try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", server.getPort()));) {
             assertThat(ConductorClient.on(channel).serverServices()).contains(GatewayGrpc.SERVICE_NAME);
 
             GatewayClient gatewayClient = GatewayClient.on(channel);
@@ -40,7 +40,7 @@ class GatewayIntegrationTest {
             }
         }
 
-        conductorServer.stopAsync().awaitTerminated();
+        server.stopAsync().awaitTerminated();
     }
 
 }

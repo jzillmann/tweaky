@@ -1,11 +1,20 @@
 package io.morethan.tweaky.grpc.server;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.Collections;
 import java.util.Set;
 
+import javax.inject.Qualifier;
 import javax.inject.Singleton;
+
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.Service.Listener;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.ElementsIntoSet;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -32,9 +41,22 @@ public class GrpcServerModule {
     }
 
     @Provides
+    @ElementsIntoSet
     @Singleton
-    GrpcServer grpcServer(Server server) {
-        return new GrpcServer(server);
+    @GrpcServerListener
+    Set<Listener> grpcServerListener() {
+        // This makes declaring of listeners optional
+        return Collections.emptySet();
+    }
+
+    @Provides
+    @Singleton
+    GrpcServer grpcServer(Server server, @GrpcServerListener Set<Listener> listeners) {
+        GrpcServer grpcServer = new GrpcServer(server);
+        for (Listener listener : listeners) {
+            grpcServer.addListener(listener, MoreExecutors.directExecutor());
+        }
+        return grpcServer;
     }
 
     public static GrpcServerModule inProcess(String name) {
@@ -50,5 +72,12 @@ public class GrpcServerModule {
     }
 
     // TODO ssl ?
+
+    @Qualifier
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface GrpcServerListener {
+
+    }
 
 }

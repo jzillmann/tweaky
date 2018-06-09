@@ -16,7 +16,7 @@ import com.google.common.util.concurrent.Service;
 public class ShutdownHelper extends ExternalResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShutdownHelper.class);
-    private final List<Closeable> _closables = new ArrayList<>();
+    private final List<AutoCloseable> _closables = new ArrayList<>();
     private final List<Service> _services = new ArrayList<>();
 
     @Override
@@ -26,7 +26,7 @@ public class ShutdownHelper extends ExternalResource {
 
     @Override
     protected void after(ExtensionContext context) throws Exception {
-        for (Closeable closeable : _closables) {
+        for (AutoCloseable closeable : _closables) {
             try {
                 closeable.close();
             } catch (Exception e) {
@@ -45,7 +45,7 @@ public class ShutdownHelper extends ExternalResource {
         _services.clear();
     }
 
-    public <T extends Closeable> T register(T closeable) {
+    public <T extends AutoCloseable> T register(T closeable) {
         _closables.add(closeable);
         return closeable;
     }

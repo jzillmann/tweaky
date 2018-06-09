@@ -1,7 +1,6 @@
 package io.morethan.tweaky;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 import java.time.Duration;
 
@@ -9,16 +8,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import com.google.common.util.concurrent.Service.State;
+
 import io.morethan.tweaky.conductor.ConductorComponent;
 import io.morethan.tweaky.conductor.NodeRegistryClient;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
-import io.morethan.tweaky.conductor.registration.NodeRejectedException;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
-import io.morethan.tweaky.node.Node;
+import io.morethan.tweaky.node.NodeComponent;
+import io.morethan.tweaky.test.TestCluster;
 import io.morethan.tweaky.testsupport.ShutdownHelper;
 
 public class ClusterIntegrationTest {
@@ -30,23 +31,42 @@ public class ClusterIntegrationTest {
 
     @Test
     void testBootupAndRegistration() throws Exception {
-        GrpcServer conductorServer = _shutdownHelper.register(ConductorComponent.builder()
-                .grpcServerModule(GrpcServerModule.plaintext(0))
-                .nodeNameProvider(NodeNameProvider.hostPort())
-                .nodeRegistrationValidator(NodeRegistrationValidator.singleToken(TOKEN))
-                .build()
-                .conductorServer());
-        conductorServer.startAsync().awaitRunning();
+        TestCluster cluster = _shutdownHelper.register(new TestCluster(3) {
 
-        Node node1 = _shutdownHelper.register(new Node(0, TOKEN, "localhost", conductorServer.getPort()));
-        Node node2 = _shutdownHelper.register(new Node(0, TOKEN, "localhost", conductorServer.getPort()));
-        Node nodeWithInvalidToken = _shutdownHelper.register(new Node(0, TOKEN + "-invalid", "localhost", conductorServer.getPort()));
+            @Override
+            protected GrpcServer createConductor() {
+                return ConductorComponent.builder()
+                        .grpcServerModule(GrpcServerModule.plaintext(0))
+                        .nodeNameProvider(NodeNameProvider.hostPort())
+                        .nodeRegistrationValidator(NodeRegistrationValidator.singleToken(TOKEN))
+                        .build()
+                        .server();
+            }
 
-        node1.startAsync();
-        node2.startAsync();
-        nodeWithInvalidToken.startAsync();
+            @Override
+            protected GrpcServer createNode(int number, int conductorPort) {
+                String nodeToken = TOKEN;
+                if (number == 2) {
+                    nodeToken += "-invalid";
+                }
+                return NodeComponent.builder()
+                        .grpcServerModule(GrpcServerModule.plaintext(0))
+                        .channelProvider(ChannelProvider.plaintext())
+                        .token(nodeToken)
+                        .conductorHost("localhost")
+                        .conductorPort(conductorPort)
+                        .autoRegister(true)
+                        .build()
+                        .server();
+            }
 
-        try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", conductorServer.getPort()))) {
+        });
+        cluster.boot();
+        cluster.nodes().get(0).awaitRunning();
+        cluster.nodes().get(1).awaitRunning();
+        cluster.nodes().get(2).awaitTerminated();
+
+        try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", cluster.conductor().getPort()))) {
             NodeRegistryClient nodeRegistryClient = NodeRegistryClient.on(channel);
             Assertions.assertTimeout(Duration.ofMinutes(1), () -> {
                 int nodeCount = 0;
@@ -58,11 +78,7 @@ public class ClusterIntegrationTest {
             });
         }
 
-        try {
-            nodeWithInvalidToken.awaitTerminated();
-            fail("should throw exception");
-        } catch (Exception e) {
-            assertThat(e).hasRootCauseInstanceOf(NodeRejectedException.class);
-        }
+        assertThat(cluster.nodes().get(2).state()).isEqualTo(State.TERMINATED);
+        // assertThat(e).hasRootCauseInstanceOf(NodeRejectedException.class);
     }
 }

@@ -9,7 +9,6 @@ import com.google.common.util.concurrent.Service.State;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
-import io.morethan.tweaky.conductor.registration.NodeRegistry;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
@@ -24,22 +23,17 @@ class ConductorComponentTest {
                 .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
                 .build();
 
-        NodeRegistry nodeRegistry = conductorCompenent.nodeRegistry();
-        GrpcServer conductorServer = conductorCompenent.conductorServer();
-        assertThat(nodeRegistry).isNotNull();
+        GrpcServer conductorServer = conductorCompenent.server();
         assertThat(conductorServer).isNotNull();
 
         // check singletons
-        assertThat(nodeRegistry).isSameAs(conductorCompenent.nodeRegistry());
-        assertThat(conductorServer).isSameAs(conductorCompenent.conductorServer());
+        assertThat(conductorServer).isSameAs(conductorCompenent.server());
 
         // check state
-        assertThat(nodeRegistry.registeredNodes()).isEqualTo(0);
         assertThat(conductorServer.state()).isEqualTo(State.NEW);
 
         // start server
-        conductorCompenent.conductorServer().startAsync().awaitRunning();
-        assertThat(nodeRegistry.registeredNodes()).isEqualTo(0);
+        conductorCompenent.server().startAsync().awaitRunning();
         assertThat(conductorServer.state()).isEqualTo(State.RUNNING);
 
         // talk to server
@@ -49,7 +43,7 @@ class ConductorComponentTest {
         }
 
         // stop server
-        conductorCompenent.conductorServer().stopAsync().awaitTerminated();
+        conductorCompenent.server().stopAsync().awaitTerminated();
         assertThat(conductorServer.state()).isEqualTo(State.TERMINATED);
     }
 
