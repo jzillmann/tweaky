@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':distributed-map-gateway')
+    compile project(':distributed-map-node')
+}

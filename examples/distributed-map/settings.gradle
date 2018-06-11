@@ -3,6 +3,7 @@ rootProject.name = 'distributed-map'
 module('shared')
 module('gateway')
 module('node')
+module('test')
 
 def module(String shortName) {
     def name = ":distributed-map-$shortName"

@@ -1,4 +1,4 @@
-package io.morethan.examples.dm;
+package io.morethan.examples.dm.gateway;
 
 import javax.inject.Singleton;
 

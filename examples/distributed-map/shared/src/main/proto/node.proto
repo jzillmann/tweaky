@@ -1,12 +1,13 @@
 syntax = "proto3";
 
-option java_package = "io.morethan.tweaky.examples.dm.gateway.proto";
+option java_package = "io.morethan.tweaky.examples.dm.node.proto";
 option java_outer_classname = "DmNodeProto";
 option java_multiple_files = false;
 
 import "shared.proto";
 
-service DistributedMapNode {
-  rpc Put (PutRequest) returns (PutReply);
+service MapNode {
+  rpc Put (stream PutRequest) returns (PutReply);
   rpc Get (GetRequest) returns (GetReply);
+  rpc PutSync (PutRequest) returns (PutReply);
 }

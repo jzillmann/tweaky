@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import io.morethan.examples.dm.GatewayClient.Inserter;
+import io.morethan.examples.dm.gateway.GatewayComponent;
 import io.morethan.tweaky.conductor.ConductorClient;
 import io.morethan.tweaky.conductor.ConductorComponent;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
@@ -21,12 +21,12 @@ class GatewayIntegrationTest {
 
     @Test
     void test() {
-        ConductorComponent conductorComponent = GatewayComponent.builder()
+        ConductorComponent gatewayComponent = GatewayComponent.builder()
                 .grpcServerModule(GrpcServerModule.plaintext(0))
                 .nodeNameProvider(NodeNameProvider.hostPort())
                 .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
                 .build();
-        GrpcServer server = conductorComponent.server();
+        GrpcServer server = gatewayComponent.server();
         server.startAsync().awaitRunning();
 
         try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", server.getPort()));) {

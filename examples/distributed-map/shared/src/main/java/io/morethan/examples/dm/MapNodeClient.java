@@ -1,29 +1,25 @@
 package io.morethan.examples.dm;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.grpc.Channel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import io.morethan.tweaky.examples.dm.gateway.proto.GatewayGrpc;
-import io.morethan.tweaky.examples.dm.gateway.proto.GatewayGrpc.GatewayBlockingStub;
-import io.morethan.tweaky.examples.dm.gateway.proto.GatewayGrpc.GatewayStub;
+import io.morethan.tweaky.examples.dm.node.proto.MapNodeGrpc;
+import io.morethan.tweaky.examples.dm.node.proto.MapNodeGrpc.MapNodeBlockingStub;
+import io.morethan.tweaky.examples.dm.node.proto.MapNodeGrpc.MapNodeStub;
 import io.morethan.tweaky.examples.dm.shared.proto.GetRequest;
 import io.morethan.tweaky.examples.dm.shared.proto.PutReply;
 import io.morethan.tweaky.examples.dm.shared.proto.PutRequest;
 import io.morethan.tweaky.grpc.Errors;
 
 /**
- * Client for the {@link GatewayGrpc}.
+ * Client for the {@link MapNodeGrpc}.
  */
-public class GatewayClient {
+public class MapNodeClient {
 
-    static final Logger LOG = LoggerFactory.getLogger(GatewayClient.class);
-    private final GatewayStub _stub;
-    private final GatewayBlockingStub _blockingStub;
+    private final MapNodeStub _stub;
+    private final MapNodeBlockingStub _blockingStub;
 
-    private GatewayClient(GatewayStub stub, GatewayBlockingStub blockingStub) {
+    public MapNodeClient(MapNodeStub stub, MapNodeBlockingStub blockingStub) {
         _stub = stub;
         _blockingStub = blockingStub;
     }
@@ -46,7 +42,7 @@ public class GatewayClient {
         }
     }
 
-    public static GatewayClient on(Channel channel) {
-        return new GatewayClient(GatewayGrpc.newStub(channel), GatewayGrpc.newBlockingStub(channel));
+    public static MapNodeClient on(Channel channel) {
+        return new MapNodeClient(MapNodeGrpc.newStub(channel), MapNodeGrpc.newBlockingStub(channel));
     }
 }
