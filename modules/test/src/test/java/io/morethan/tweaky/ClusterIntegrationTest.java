@@ -2,9 +2,6 @@ package io.morethan.tweaky;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Duration;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -31,7 +28,7 @@ public class ClusterIntegrationTest {
 
     @Test
     void testBootupAndRegistration() throws Exception {
-        TestCluster cluster = _shutdownHelper.register(new TestCluster(3) {
+        TestCluster cluster = _shutdownHelper.register(new TestCluster(3, ChannelProvider.plaintext()) {
 
             @Override
             protected GrpcServer createConductor() {
@@ -44,14 +41,14 @@ public class ClusterIntegrationTest {
             }
 
             @Override
-            protected GrpcServer createNode(int number, int conductorPort) {
+            protected GrpcServer createNode(int number, int conductorPort, ChannelProvider channelProvider) {
                 String nodeToken = TOKEN;
                 if (number == 2) {
                     nodeToken += "-invalid";
                 }
                 return NodeComponent.builder()
                         .grpcServerModule(GrpcServerModule.plaintext(0))
-                        .channelProvider(ChannelProvider.plaintext())
+                        .channelProvider(channelProvider)
                         .token(nodeToken)
                         .conductorHost("localhost")
                         .conductorPort(conductorPort)
@@ -61,24 +58,17 @@ public class ClusterIntegrationTest {
             }
 
         });
-        cluster.boot();
-        cluster.nodes().get(0).awaitRunning();
-        cluster.nodes().get(1).awaitRunning();
+        cluster.boot().awaitNodes(2);
         cluster.nodes().get(2).awaitTerminated();
-
-        try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", cluster.conductor().getPort()))) {
-            NodeRegistryClient nodeRegistryClient = NodeRegistryClient.on(channel);
-            Assertions.assertTimeout(Duration.ofMinutes(1), () -> {
-                int nodeCount = 0;
-                do {
-                    Thread.yield();
-                    nodeCount = nodeRegistryClient.nodeCount();
-                    System.out.println(nodeCount);
-                } while (nodeCount < 2);
-            });
-        }
-
         assertThat(cluster.nodes().get(2).state()).isEqualTo(State.TERMINATED);
         // assertThat(e).hasRootCauseInstanceOf(NodeRejectedException.class);
+
+        try (ClosableChannel channel = cluster.channelToConductor()) {
+            NodeRegistryClient nodeRegistryClient = NodeRegistryClient.on(channel);
+            assertThat(nodeRegistryClient.nodeCount()).isEqualTo(2);
+            nodeRegistryClient.awaitNodes(1);
+            nodeRegistryClient.awaitNodes(2);
+        }
+
     }
 }

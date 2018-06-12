@@ -9,4 +9,5 @@ import "shared.proto";
 service Gateway {
   rpc Put (stream PutRequest) returns (PutReply);
   rpc Get (GetRequest) returns (GetReply);
+  rpc PutSync (PutRequest) returns (PutReply);
 }

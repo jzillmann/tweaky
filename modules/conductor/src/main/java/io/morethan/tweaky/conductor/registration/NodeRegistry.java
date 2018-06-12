@@ -1,8 +1,11 @@
 package io.morethan.tweaky.conductor.registration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +26,16 @@ public class NodeRegistry {
     private final NodeNameProvider _nameProvider;
     private final NodeChannelProvider _nodeChannelProvider;
     private final Map<String, NodeAddress> _nodeAddressMap = new HashMap<>();
-    private final Map<String, NodeChannel> _nodeChannelMap = new HashMap<>();
+    private final List<NodeChannel> _nodeChannels = new ArrayList<>();
+    private final Set<NodeListener> _nodeListeners;
 
-    public NodeRegistry(NodeRegistrationValidator registrationValidator, NodeNameProvider nameProvider, NodeChannelProvider nodeChannelProvider) {
+    // private final Map<String, NodeChannel> _nodeChannelMap = new HashMap<>();
+
+    public NodeRegistry(NodeRegistrationValidator registrationValidator, NodeNameProvider nameProvider, NodeChannelProvider nodeChannelProvider, Set<NodeListener> nodeListeners) {
         _registrationValidator = registrationValidator;
         _nameProvider = nameProvider;
         _nodeChannelProvider = nodeChannelProvider;
+        _nodeListeners = nodeListeners;
     }
 
     public int registeredNodes() {
@@ -67,8 +74,17 @@ public class NodeRegistry {
         }
 
         LOG.info("Accepted node '{}' as '{}'", nodeId, nodeName);
-        _nodeAddressMap.put(nodeName, new NodeAddress(host, port, token));
-        _nodeChannelMap.put(nodeName, nodeChannel);
+        NodeAddress nodeAddress = new NodeAddress(host, port, token);
+        _nodeAddressMap.put(nodeName, nodeAddress);
+        // _nodeChannelMap.put(nodeName, nodeChannel);
+        _nodeChannels.add(nodeChannel);
+
+        // TODO listeners should have been executed before nodeCount is increased (otherwise awaitNodes is not reliable)
+        for (NodeListener nodeListener : _nodeListeners) {
+            // TODO failure handling ?
+            // TODO decouple / async ?
+            nodeListener.addNode(nodeAddress, nodeChannel.getManagedChannel());
+        }
 
         // TODO think about synchronization - up from name ?
         // TODO announce node arrival through listener or event ?
@@ -77,4 +93,5 @@ public class NodeRegistry {
     private String nodeId(String host, int port, String token) {
         return new StringBuilder(token).append(':').append(host).append(':').append(port).append(':').toString();
     }
+
 }

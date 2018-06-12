@@ -2,7 +2,9 @@ package io.morethan.examples.dm.gateway;
 
 import javax.inject.Singleton;
 
+import dagger.BindsInstance;
 import dagger.Component;
+import io.morethan.examples.dm.gateway.GatewayModule.NodeCount;
 import io.morethan.tweaky.conductor.ConductorComponent;
 import io.morethan.tweaky.conductor.ConductorModule;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationModule;
@@ -19,6 +21,9 @@ public interface GatewayComponent extends ConductorComponent {
 
     @Component.Builder
     interface Builder extends ConductorComponent.Builder {
+
+        @BindsInstance
+        Builder nodeCount(@NodeCount int nodeCount);
 
         @Override
         GatewayComponent build();

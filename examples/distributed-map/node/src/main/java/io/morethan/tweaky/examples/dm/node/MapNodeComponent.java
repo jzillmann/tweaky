@@ -11,7 +11,7 @@ import io.morethan.tweaky.node.NodeModule;
 /**
  * Main component of the node server.
  */
-@Component(modules = { NodeModule.class, GrpcServerModule.class, GrpcServicesModule.class })
+@Component(modules = { NodeModule.class, GrpcServerModule.class, GrpcServicesModule.class, MapNodeModule.class })
 @Singleton
 public interface MapNodeComponent extends NodeComponent {
 

@@ -4,6 +4,7 @@ import io.grpc.Channel;
 import io.grpc.StatusRuntimeException;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc.NodeRegistryBlockingStub;
+import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.AwaitNodesRequest;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeCountRequest;
 import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeRegistrationRequest;
 import io.morethan.tweaky.grpc.Errors;
@@ -30,6 +31,19 @@ public class NodeRegistryClient {
     public int nodeCount() {
         try {
             return _blockingStub.nodeCount(NodeCountRequest.getDefaultInstance()).getCount();
+        } catch (StatusRuntimeException e) {
+            throw Errors.unwrapped(e);
+        }
+    }
+
+    /**
+     * Waits until the given number of nodes have joined the cluster.
+     * 
+     * @param nodeCount
+     */
+    public void awaitNodes(int nodeCount) {
+        try {
+            _blockingStub.awaitNodes(AwaitNodesRequest.newBuilder().setCount(nodeCount).build());
         } catch (StatusRuntimeException e) {
             throw Errors.unwrapped(e);
         }

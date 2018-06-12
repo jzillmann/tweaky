@@ -3,10 +3,10 @@ package io.morethan.examples.dm;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.morethan.examples.dm.gateway.GatewayComponent;
 import io.morethan.tweaky.conductor.ConductorClient;
-import io.morethan.tweaky.conductor.ConductorComponent;
 import io.morethan.tweaky.conductor.NodeRegistryClient;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
@@ -16,55 +16,53 @@ import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
-import io.morethan.tweaky.node.NodeComponent;
+import io.morethan.tweaky.test.TestCluster;
+import io.morethan.tweaky.testsupport.ShutdownHelper;
 
 public class DistributedMapTest {
 
-    // TODO shutdown helper ?
+    @RegisterExtension
+    ShutdownHelper _shutdownHelper = new ShutdownHelper();
 
     @Test
-    void test() {
-        ConductorComponent gatewayComponent = GatewayComponent.builder()
-                .grpcServerModule(GrpcServerModule.plaintext(0))
-                .nodeNameProvider(NodeNameProvider.hostPort())
-                .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
-                .build();
-        GrpcServer gatewayServer = gatewayComponent.server();
-        gatewayServer.startAsync().awaitRunning();
+    void test() throws InterruptedException {
+        TestCluster cluster = _shutdownHelper.register(new TestCluster(2, ChannelProvider.plaintext()) {
 
-        NodeComponent node1Component = MapNodeComponent.builder()
-                .grpcServerModule(GrpcServerModule.plaintext(0))
-                .token("doesn't matter")
-                .conductorHost("localhost")
-                .conductorPort(gatewayServer.getPort())
-                .channelProvider(ChannelProvider.plaintext())
-                .autoRegister(true)
-                .build();
+            @Override
+            protected GrpcServer createConductor() {
+                return GatewayComponent.builder()
+                        .nodeCount(2)
+                        .grpcServerModule(GrpcServerModule.plaintext(0))
+                        .nodeNameProvider(NodeNameProvider.hostPort())
+                        .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
+                        .build().server();
+            }
 
-        NodeComponent node2Component = MapNodeComponent.builder()
-                .grpcServerModule(GrpcServerModule.plaintext(0))
-                .token("doesn't matter")
-                .conductorHost("localhost")
-                .conductorPort(gatewayServer.getPort())
-                .channelProvider(ChannelProvider.plaintext())
-                .autoRegister(true)
-                .build();
+            @Override
+            protected GrpcServer createNode(int number, int conductorPort, ChannelProvider channelProvider) {
+                return MapNodeComponent.builder()
+                        .grpcServerModule(GrpcServerModule.plaintext(0))
+                        .token("doesn't matter")
+                        .conductorHost("localhost")
+                        .conductorPort(conductorPort)
+                        .channelProvider(channelProvider)
+                        .autoRegister(true)
+                        .build().server();
+            }
+        });
 
-        node1Component.server().startAsync().awaitRunning();
-        node2Component.server().startAsync().awaitRunning();
-
-        try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", gatewayServer.getPort()));) {
+        cluster.boot().awaitNodes();
+        try (ClosableChannel channel = cluster.channelToConductor();) {
             assertThat(ConductorClient.on(channel).serverServices()).contains(GatewayGrpc.SERVICE_NAME);
             assertThat(NodeRegistryClient.on(channel).nodeCount()).isEqualTo(2);
 
             GatewayClient gatewayClient = GatewayClient.on(channel);
             try (Inserter inserter = gatewayClient.createInserter();) {
-                inserter.put("A", "1");
-                inserter.put("A", "2");
-                inserter.put("B", "3");
+                inserter.put("key1", "1");
+                inserter.put("key2", "2");
+                inserter.put("key3", "3");
+                inserter.put("key4", "4");
             }
         }
-
-        gatewayServer.stopAsync().awaitTerminated();
     }
 }

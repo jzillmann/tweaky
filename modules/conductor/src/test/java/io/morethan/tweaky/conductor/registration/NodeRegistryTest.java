@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.rmi.ConnectException;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ class NodeRegistryTest {
         mockNode(channelProvider, "localhost", 26, "my-cluster2");
 
         SingleTokenValidator tokenValidator = new SingleTokenValidator("my-cluster");
-        NodeRegistry registry = new NodeRegistry(tokenValidator, new HostPortNameProvider(), channelProvider);
+        NodeRegistry registry = new NodeRegistry(tokenValidator, new HostPortNameProvider(), channelProvider, Collections.emptySet());
         assertThat(registry.registeredNodes()).isEqualTo(0);
 
         // Register node with wrong token

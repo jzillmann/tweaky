@@ -2,6 +2,9 @@ package io.morethan.examples.dm;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.grpc.stub.StreamObserver;
 import io.morethan.tweaky.grpc.Errors;
 
@@ -12,6 +15,7 @@ import io.morethan.tweaky.grpc.Errors;
  */
 public class CompletableObserver<T> implements StreamObserver<T> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CompletableObserver.class);
     private final CountDownLatch _countDownLatch = new CountDownLatch(1);
     private T _resultValue;
     private Throwable _error;
@@ -23,6 +27,7 @@ public class CompletableObserver<T> implements StreamObserver<T> {
 
     @Override
     public void onError(Throwable t) {
+        LOG.error("Got error", t);
         _error = t;
     }
 
