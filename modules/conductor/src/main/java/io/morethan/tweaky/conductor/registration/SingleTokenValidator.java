@@ -1,6 +1,8 @@
 package io.morethan.tweaky.conductor.registration;
 
-import java.util.Optional;
+import java.util.function.Supplier;
+
+import io.morethan.tweaky.conductor.util.Try;
 
 /**
  * A {@link NodeRegistrationValidator} which is configured with a single token. Nodes need to pass that token in order to be accepted.
@@ -14,15 +16,11 @@ public class SingleTokenValidator implements NodeRegistrationValidator {
     }
 
     @Override
-    public Optional<String> accept(String host, int port, String token) {
+    public Try<NodeContact, String> accept(String host, int port, String token, Supplier<Try<NodeContact, String>> registrationProcess) {
         if (!_token.equals(token)) {
-            return Optional.of("Invalid token: " + token);
+            return Try.failure("Invalid token: " + token);
         }
-        return Optional.empty();
+        return registrationProcess.get();
     }
 
-    @Override
-    public void release(String token) {
-        // nothing to do
-    }
 }

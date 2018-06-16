@@ -1,6 +1,8 @@
 package io.morethan.tweaky.conductor.registration;
 
-import java.util.Optional;
+import java.util.function.Supplier;
+
+import io.morethan.tweaky.conductor.util.Try;
 
 /**
  * Responsible for verifying that a node, which attempts to register on the conductor is allowed to join.
@@ -13,17 +15,11 @@ public interface NodeRegistrationValidator {
      * @param token
      * @param port
      * @param host
+     * @param registrationProcess
      * 
-     * @return {@link Optional#empty()} in case the node is allowed to join or else an rejection message
+     * @return a registration try which can either be a success or a failure/rejection
      */
-    Optional<String> accept(String host, int port, String token);
-
-    /**
-     * Release the given token, i.e. because the node has been dropped.
-     *
-     * @param token
-     */
-    void release(String token);
+    Try<NodeContact, String> accept(String host, int port, String token, Supplier<Try<NodeContact, String>> registrationProcess);
 
     public static NodeTokenStore tokenStore() {
         return new NodeTokenStore();
@@ -37,14 +33,10 @@ public interface NodeRegistrationValidator {
         return new NodeRegistrationValidator() {
 
             @Override
-            public Optional<String> accept(String host, int port, String token) {
-                return Optional.empty();
+            public Try<NodeContact, String> accept(String host, int port, String token, Supplier<Try<NodeContact, String>> registrationProcess) {
+                return registrationProcess.get();
             }
 
-            @Override
-            public void release(String token) {
-                // nothing to do
-            }
         };
     }
 

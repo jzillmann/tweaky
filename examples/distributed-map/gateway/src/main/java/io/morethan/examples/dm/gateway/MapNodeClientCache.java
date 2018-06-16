@@ -2,9 +2,8 @@ package io.morethan.examples.dm.gateway;
 
 import com.google.common.base.Verify;
 
-import io.grpc.Channel;
 import io.morethan.examples.dm.MapNodeClient;
-import io.morethan.tweaky.conductor.registration.NodeAddress;
+import io.morethan.tweaky.conductor.registration.NodeContact;
 import io.morethan.tweaky.conductor.registration.NodeListener;
 
 /**
@@ -25,8 +24,8 @@ public class MapNodeClientCache implements NodeListener {
     }
 
     @Override
-    public void addNode(NodeAddress nodeAddress, Channel channel) {
-        _clients[_registeredClients++] = MapNodeClient.on(channel);
+    public void addNode(NodeContact nodeContact) {
+        _clients[_registeredClients++] = MapNodeClient.on(nodeContact.channel());
     }
 
     public MapNodeClient client(int node) {
