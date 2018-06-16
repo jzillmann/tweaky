@@ -1,85 +1,81 @@
 package io.morethan.tweaky.conductor.registration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.rmi.ConnectException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
-import io.morethan.tweaky.conductor.channel.NodeChannel;
-import io.morethan.tweaky.conductor.channel.NodeChannelProvider;
-import io.morethan.tweaky.node.NodeClient;
+import com.google.common.collect.ImmutableSet;
+
+import io.morethan.tweaky.conductor.util.Try;
 
 class NodeRegistryTest {
 
     @Test
     void testNodeRegistration() {
-        NodeChannelProvider channelProvider = mock(NodeChannelProvider.class);
-        mockNode(channelProvider, "localhost", 23, "my-cluster");
-        mockNode(channelProvider, "localhost", 24, "my-cluster");
-        mockUnreachableNode(channelProvider, "localhost", 25);
-        mockNode(channelProvider, "localhost", 26, "my-cluster2");
+        CapturingNodeListener nodeListener = new CapturingNodeListener();
 
-        SingleTokenValidator tokenValidator = new SingleTokenValidator("my-cluster");
-        NodeRegistry registry = new NodeRegistry(tokenValidator, new HostPortNameProvider(), channelProvider, Collections.emptySet());
+        NodeAcceptor nodeAcceptor = mock(NodeAcceptor.class);
+        when(nodeAcceptor.accept("localhost", 23, "token")).thenReturn(Try.success(mock(NodeContact.class)));
+        when(nodeAcceptor.accept("localhost", 24, "token")).thenReturn(Try.failure("failed for some reason"));
+
+        NodeRegistry registry = new NodeRegistry(nodeAcceptor, ImmutableSet.of(nodeListener));
         assertThat(registry.registeredNodes()).isEqualTo(0);
 
-        // Register node with wrong token
-        try {
-            registry.registerNode("localhost", 23, "jerries-cluster");
-            fail("should throw exception");
-        } catch (NodeRejectedException e) {
-            assertThat(e).hasMessageContaining("Invalid token");
-        }
-        assertThat(registry.registeredNodes()).isEqualTo(0);
-
-        // Register 2 nodes successfully
-        registry.registerNode("localhost", 23, "my-cluster");
+        // successful node
+        registry.registerNode("localhost", 23, "token");
         assertThat(registry.registeredNodes()).isEqualTo(1);
-        registry.registerNode("localhost", 24, "my-cluster");
-        assertThat(registry.registeredNodes()).isEqualTo(2);
+        assertThat(nodeListener.getNodeContacts()).hasSize(1);
 
-        // Register already registered node again
+        // failing node
         try {
-            registry.registerNode("localhost", 24, "my-cluster");
+            registry.registerNode("localhost", 24, "token");
             fail("should throw exception");
         } catch (NodeRejectedException e) {
-            assertThat(e).hasMessageContaining("Name already given");
+            // expected
         }
-
-        // Register node with unreachable server
-        try {
-            registry.registerNode("localhost", 25, "my-cluster");
-            fail("should throw exception");
-        } catch (NodeRejectedException e) {
-            assertThat(e).hasMessageContaining("Could not establish channel").hasMessageContaining("localhost:25");
-        }
-
-        // Register node with wrong token of server
-        try {
-            registry.registerNode("localhost", 26, "my-cluster");
-            fail("should throw exception");
-        } catch (NodeRejectedException e) {
-            assertThat(e).hasMessageContaining("Remote token does not match").hasMessageContaining("my-cluster / my-cluster2");
-        }
+        assertThat(registry.registeredNodes()).isEqualTo(1);
+        assertThat(nodeListener.getNodeContacts()).hasSize(1);
     }
 
-    private void mockUnreachableNode(NodeChannelProvider channelProvider, String host, int port) {
-        when(channelProvider.get(host, port)).thenThrow(new RuntimeException(new ConnectException("Connection refused")));
+    @Test
+    void testFailingListener() {
+        NodeListener nodeListener1 = mock(NodeListener.class);
+        NodeListener nodeListener2 = mock(NodeListener.class);
+        NodeListener nodeListener3 = mock(NodeListener.class);
+        doThrow(new RuntimeException("test failure")).when(nodeListener2).addNode(ArgumentMatchers.any());
+
+        NodeAcceptor nodeAcceptor = mock(NodeAcceptor.class);
+        when(nodeAcceptor.accept("localhost", 23, "token")).thenReturn(Try.success(mock(NodeContact.class)));
+        NodeRegistry registry = new NodeRegistry(nodeAcceptor, ImmutableSet.of(nodeListener1, nodeListener2, nodeListener3));
+        registry.registerNode("localhost", 23, "token");
+        assertThat(registry.registeredNodes()).isEqualTo(1);
+
+        verify(nodeListener1).addNode(ArgumentMatchers.any());
+        verify(nodeListener2).addNode(ArgumentMatchers.any());
     }
 
-    private void mockNode(NodeChannelProvider channelProvider, String host, int port, String token) {
-        NodeClient nodeClient = mock(NodeClient.class);
-        when(nodeClient.token()).thenReturn(token);
+    private class CapturingNodeListener implements NodeListener {
 
-        NodeChannel nodeChannel = mock(NodeChannel.class, RETURNS_DEEP_STUBS);
-        when(nodeChannel.nodeClient()).thenReturn(nodeClient);
-        when(channelProvider.get(host, port)).thenReturn(nodeChannel);
+        private final List<NodeContact> _nodeContacts = new ArrayList<>();
+
+        public List<NodeContact> getNodeContacts() {
+            return _nodeContacts;
+        }
+
+        @Override
+        public void addNode(NodeContact nodeContact) {
+            _nodeContacts.add(nodeContact);
+        }
+
     }
 
 }

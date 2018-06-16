@@ -14,7 +14,7 @@ import io.morethan.tweaky.conductor.util.Try;
  */
 public class NodeTokenStore implements NodeRegistrationValidator {
 
-    private static final Striped<Lock> _nodeRegistrationLock = Striped.lock(16);
+    private final Striped<Lock> _nodeRegistrationLock = Striped.lock(16);
     private final Set<String> _allowedTokens = new HashSet<>();
     private final Set<String> _acceptedTokens = new HashSet<>();
 

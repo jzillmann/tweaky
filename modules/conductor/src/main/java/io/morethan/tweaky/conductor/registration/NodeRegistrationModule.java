@@ -8,20 +8,22 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
-import io.morethan.tweaky.conductor.channel.DefaulftNodeChannelProvider;
-import io.morethan.tweaky.conductor.channel.NodeChannelProvider;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.PlaintextChannelProvider;
 
 @Module
 public class NodeRegistrationModule {
 
-    // TODO add NodeAcceptor
+    @Provides
+    @Singleton
+    NodeRegistry nodeRegistry(NodeAcceptor nodeAcceptor, Set<NodeListener> nodeListeners) {
+        return new NodeRegistry(nodeAcceptor, nodeListeners);
+    }
 
     @Provides
     @Singleton
-    NodeRegistry nodeRegistry(NodeRegistrationValidator nodeRegistrationValidator, NodeNameProvider nodeNameProvider, NodeChannelProvider nodeChannelProvider, Set<NodeListener> nodeListeners) {
-        return new NodeRegistry(nodeRegistrationValidator, nodeNameProvider, nodeChannelProvider, nodeListeners);
+    NodeAcceptor nodeAcceptor(NodeRegistrationValidator nodeRegistrationValidator, NodeNameProvider nodeNameProvider, ChannelProvider channelProvider, NodeClientProvider nodeClientProvider) {
+        return new NodeAcceptor(nodeRegistrationValidator, nodeNameProvider, channelProvider, nodeClientProvider);
     }
 
     @Provides
@@ -33,8 +35,8 @@ public class NodeRegistrationModule {
 
     @Provides
     @Singleton
-    NodeChannelProvider nodeChannelProvider(ChannelProvider channelProvider) {
-        return new DefaulftNodeChannelProvider(channelProvider);
+    NodeClientProvider nodeClientProvider() {
+        return NodeClientProvider.create();
     }
 
     @Provides

@@ -106,7 +106,7 @@ public class NodeRegistryIntegrationTest {
                 nodeRegistryClient.registerNode("localhost", 23, VALID_TOKEN_3);
                 fail("should throw exception");
             } catch (Exception e) {
-                assertThat(e).hasMessageContaining("Could not establish channel").hasMessageContaining("localhost:23");
+                assertThat(e).hasMessageContaining("Could not get remote node token").hasMessageContaining("localhost:23");
             }
             assertThat(nodeRegistryClient.nodeCount()).isEqualTo(2);
 
