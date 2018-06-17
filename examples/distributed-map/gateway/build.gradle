@@ -1,6 +1,6 @@
-apply from: rootProject.file("../../gradle/dagger.gradle")
+apply from: rootProject.file("gradle/dagger.gradle")
 
 dependencies {
-    compile project(':distributed-map-shared')
-    compile group: 'io.morethan.tweaky', name: 'tweaky-conductor', version: tweakyVersion
+    compile project(':tweaky-conductor')
+    compile project(':tweaky-example-distributed-map-shared')
 }

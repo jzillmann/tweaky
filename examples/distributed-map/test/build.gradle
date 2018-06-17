@@ -1,5 +1,0 @@
-dependencies {
-    compile project(':distributed-map-gateway')
-    compile project(':distributed-map-node')
-    compile group: 'io.morethan.tweaky', name: 'tweaky-test', version: tweakyVersion
-}

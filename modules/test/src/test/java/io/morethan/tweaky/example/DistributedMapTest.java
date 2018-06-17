@@ -1,10 +1,12 @@
-package io.morethan.examples.dm;
+package io.morethan.tweaky.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import io.morethan.examples.dm.GatewayClient;
+import io.morethan.examples.dm.Inserter;
 import io.morethan.examples.dm.gateway.GatewayComponent;
 import io.morethan.tweaky.conductor.ConductorClient;
 import io.morethan.tweaky.conductor.NodeRegistryClient;

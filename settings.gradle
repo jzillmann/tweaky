@@ -7,9 +7,18 @@ module('node')
 module('node-shared')
 module('test')
 
+example('distributed-map', 'shared')
+example('distributed-map', 'node')
+example('distributed-map', 'gateway')
+
 def module(String shortName) {
     def name = ":tweaky-$shortName"
     include name
     project(name).projectDir = file("modules/$shortName")
 }
 
+def example(String exampleName, String moduleName) {
+    def name = ":tweaky-example-$exampleName-$moduleName"
+    include name
+    project(name).projectDir = file("examples/$exampleName/$moduleName")
+}

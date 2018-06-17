@@ -2,6 +2,9 @@ dependencies {
     compile project(':tweaky-conductor')
     compile project(':tweaky-node')
 
+    compile project(':tweaky-example-distributed-map-node')
+    compile project(':tweaky-example-distributed-map-gateway')
+
     compileOnly group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
 }
 
