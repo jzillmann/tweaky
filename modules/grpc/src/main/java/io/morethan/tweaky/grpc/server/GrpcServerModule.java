@@ -12,9 +12,11 @@ import javax.inject.Singleton;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service.Listener;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import dagger.multibindings.IntoSet;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -33,6 +35,13 @@ public class GrpcServerModule {
             serverBuilder.addService(bindableService);
         }
         return serverBuilder.build();
+    }
+
+    @Provides
+    @Singleton
+    @IntoSet
+    BindableService serviceRegistry(Lazy<Set<BindableService>> bindableServices) {
+        return new ServiceRegistryGrpcService(bindableServices);
     }
 
     @Provides

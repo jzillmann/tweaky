@@ -8,8 +8,8 @@ import io.morethan.tweaky.grpc.GrpcServicesModule;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 import io.morethan.tweaky.node.NodeModule.AutoRegister;
-import io.morethan.tweaky.node.NodeModule.ConductorHost;
-import io.morethan.tweaky.node.NodeModule.ConductorPort;
+import io.morethan.tweaky.node.NodeModule.NodeRegistryHost;
+import io.morethan.tweaky.node.NodeModule.NodeRegistryPort;
 import io.morethan.tweaky.node.NodeModule.NodeToken;
 
 /**
@@ -22,7 +22,7 @@ public interface NodeComponent {
     GrpcServer server();
 
     /**
-     * Can be used to register the node on the conductor, in case auto-register is disabled.
+     * Can be used to register the node on the node registry, in case auto-register is disabled.
      * 
      * @return
      */
@@ -52,7 +52,7 @@ public interface NodeComponent {
         Builder grpcServiceModule(GrpcServicesModule grpcServiceModule);
 
         /**
-         * The token the node registers itself at the conductor with. Required.
+         * The token the node registers itself at the node registry with. Required.
          * 
          * @param nodeToken
          * @return
@@ -61,22 +61,22 @@ public interface NodeComponent {
         Builder token(@NodeToken String nodeToken);
 
         /**
-         * The host of the conductor. Required.
+         * The host of the node registry. Required.
          * 
-         * @param conductorHost
+         * @param nodeRegistryHost
          * @return
          */
         @BindsInstance
-        Builder conductorHost(@ConductorHost String conductorHost);
+        Builder nodeRegistryHost(@NodeRegistryHost String nodeRegistryHost);
 
         /**
-         * The port of the conductor. Required.
+         * The port of the node registry. Required.
          * 
-         * @param conductorPort
+         * @param nodeRegistryPort
          * @return
          */
         @BindsInstance
-        Builder conductorPort(@ConductorPort int conductorPort);
+        Builder nodeRegistryPort(@NodeRegistryPort int nodeRegistryPort);
 
         @BindsInstance
         Builder autoRegister(@AutoRegister boolean autoRegister);

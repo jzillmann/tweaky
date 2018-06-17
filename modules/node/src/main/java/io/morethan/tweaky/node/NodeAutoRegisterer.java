@@ -29,7 +29,7 @@ public class NodeAutoRegisterer extends Listener {
         } catch (Exception e) {
             // TODO find a better more visible way in shutting the node down.
             _grpcServer.get().stopAsync();
-            LOG.error("Failed to register on conductor.. Shutting node down...", e);
+            LOG.error("Failed to register on node registry. Shutting node down...", e);
         }
     }
 

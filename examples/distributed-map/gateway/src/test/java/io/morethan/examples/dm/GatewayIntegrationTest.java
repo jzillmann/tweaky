@@ -5,13 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import io.morethan.examples.dm.gateway.GatewayComponent;
-import io.morethan.tweaky.conductor.ConductorClient;
-import io.morethan.tweaky.conductor.ConductorComponent;
+import io.morethan.tweaky.conductor.NodeRegistryComponent;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.examples.dm.gateway.proto.GatewayGrpc;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
+import io.morethan.tweaky.grpc.client.ServiceRegistryClient;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
@@ -21,7 +21,7 @@ class GatewayIntegrationTest {
 
     @Test
     void test() {
-        ConductorComponent gatewayComponent = GatewayComponent.builder()
+        NodeRegistryComponent gatewayComponent = GatewayComponent.builder()
                 .nodeCount(0)
                 .grpcServerModule(GrpcServerModule.plaintext(0))
                 .nodeNameProvider(NodeNameProvider.hostPort())
@@ -31,7 +31,7 @@ class GatewayIntegrationTest {
         server.startAsync().awaitRunning();
 
         try (ClosableChannel channel = ClosableChannel.of(ChannelProvider.plaintext().get("localhost", server.getPort()));) {
-            assertThat(ConductorClient.on(channel).serverServices()).contains(GatewayGrpc.SERVICE_NAME);
+            assertThat(ServiceRegistryClient.on(channel).services()).contains(GatewayGrpc.SERVICE_NAME);
         }
 
         server.stopAsync().awaitTerminated();

@@ -31,26 +31,26 @@ public class NodeModule {
     @Provides
     @Singleton
     @IntoSet
-    BindableService nodeService(@NodeToken String token, Lazy<Set<BindableService>> bindableServices) {
-        return new NodeGrpcService(token, bindableServices);
+    BindableService nodeService(@NodeToken String token) {
+        return new NodeGrpcService(token);
     }
 
     @Provides
     @Singleton
-    ManagedChannel conductorChannel(ChannelProvider channelProvider, @ConductorHost String conductorHost, @ConductorPort int conductorPort) {
-        return channelProvider.get(conductorHost, conductorPort);
+    ManagedChannel nodeRegistryChannel(ChannelProvider channelProvider, @NodeRegistryHost String nodeRegistryHost, @NodeRegistryPort int nodeRegistryPort) {
+        return channelProvider.get(nodeRegistryHost, nodeRegistryPort);
     }
 
     @Provides
     @Singleton
-    NodeRegisterer nodeRegisterer(@NodeToken String token, ManagedChannel conductorChannel, Lazy<GrpcServer> grpcServer) {
+    NodeRegisterer nodeRegisterer(@NodeToken String token, ManagedChannel nodeRegistryChannel, Lazy<GrpcServer> grpcServer) {
         String hostName;
         try {
             hostName = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
-        return new NodeRegisterer(token, hostName, conductorChannel, grpcServer);
+        return new NodeRegisterer(token, hostName, nodeRegistryChannel, grpcServer);
     }
 
     @Provides
@@ -73,13 +73,13 @@ public class NodeModule {
     @Qualifier
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
-    public static @interface ConductorHost {
+    public static @interface NodeRegistryHost {
     }
 
     @Qualifier
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
-    public static @interface ConductorPort {
+    public static @interface NodeRegistryPort {
     }
 
     @Qualifier

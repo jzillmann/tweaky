@@ -10,7 +10,7 @@ import io.morethan.tweaky.conductor.registration.proto.NodeRegistryProto.NodeReg
 import io.morethan.tweaky.grpc.Errors;
 
 /**
- * A client for {@link ConductorGrpcService}.
+ * A client for {@link NodeRegistryGrpc}.
  */
 public class NodeRegistryClient {
 

@@ -10,41 +10,42 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
+import io.morethan.tweaky.grpc.client.ServiceRegistryClient;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
-class ConductorComponentTest {
+class NodeRegistryComponentTest {
 
     @Test
     void test() {
-        ConductorComponent conductorCompenent = DaggerConductorComponent.builder()
+        NodeRegistryComponent compenent = DaggerNodeRegistryComponent.builder()
                 .grpcServerModule(GrpcServerModule.inProcess("server"))
                 .nodeNameProvider(NodeNameProvider.hostPort())
                 .nodeRegistrationValidator(NodeRegistrationValidator.acceptAll())
                 .build();
 
-        GrpcServer conductorServer = conductorCompenent.server();
-        assertThat(conductorServer).isNotNull();
+        GrpcServer server = compenent.server();
+        assertThat(server).isNotNull();
 
         // check singletons
-        assertThat(conductorServer).isSameAs(conductorCompenent.server());
+        assertThat(server).isSameAs(compenent.server());
 
         // check state
-        assertThat(conductorServer.state()).isEqualTo(State.NEW);
+        assertThat(server.state()).isEqualTo(State.NEW);
 
         // start server
-        conductorCompenent.server().startAsync().awaitRunning();
-        assertThat(conductorServer.state()).isEqualTo(State.RUNNING);
+        compenent.server().startAsync().awaitRunning();
+        assertThat(server.state()).isEqualTo(State.RUNNING);
 
         // talk to server
         try (ClosableChannel channel = ClosableChannel.of(InProcessChannelBuilder.forName("server").build());) {
-            ConductorClient conductorClient = ConductorClient.on(channel);
-            assertThat(conductorClient.serverServices()).isNotEmpty();
+            ServiceRegistryClient servicesClient = ServiceRegistryClient.on(channel);
+            assertThat(servicesClient.services()).isNotEmpty();
         }
 
         // stop server
-        conductorCompenent.server().stopAsync().awaitTerminated();
-        assertThat(conductorServer.state()).isEqualTo(State.TERMINATED);
+        compenent.server().stopAsync().awaitTerminated();
+        assertThat(server.state()).isEqualTo(State.TERMINATED);
     }
 
 }

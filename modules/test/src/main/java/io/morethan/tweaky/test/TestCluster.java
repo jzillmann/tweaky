@@ -9,12 +9,12 @@ import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 
 /**
- * Bundles conductor and n nodes.
+ * Bundles node registry and n nodes.
  */
 public abstract class TestCluster implements AutoCloseable {
 
     private final int _numberOfNodes;
-    private GrpcServer _conductor;
+    private GrpcServer _nodeRegistryServer;
     private final List<GrpcServer> _nodes = new ArrayList<>();
     private final ChannelProvider _channelProvider;
 
@@ -23,8 +23,8 @@ public abstract class TestCluster implements AutoCloseable {
         _channelProvider = channelProvider;
     }
 
-    public GrpcServer conductor() {
-        return _conductor;
+    public GrpcServer nodeRegistryServer() {
+        return _nodeRegistryServer;
     }
 
     public GrpcServer node(int i) {
@@ -35,16 +35,16 @@ public abstract class TestCluster implements AutoCloseable {
         return _nodes;
     }
 
-    protected abstract GrpcServer createConductor();
+    protected abstract GrpcServer createNodeRegistry();
 
-    protected abstract GrpcServer createNode(int number, int conductorPort, ChannelProvider channelProvider);
+    protected abstract GrpcServer createNode(int number, int nodeRegistryPort, ChannelProvider channelProvider);
 
     public TestCluster boot() {
-        _conductor = createConductor();
-        _conductor.startAsync().awaitRunning();
+        _nodeRegistryServer = createNodeRegistry();
+        _nodeRegistryServer.startAsync().awaitRunning();
 
         for (int i = 0; i < _numberOfNodes; i++) {
-            GrpcServer node = createNode(i, _conductor.getPort(), _channelProvider);
+            GrpcServer node = createNode(i, _nodeRegistryServer.getPort(), _channelProvider);
             node.startAsync();
             _nodes.add(node);
         }
@@ -56,14 +56,14 @@ public abstract class TestCluster implements AutoCloseable {
     }
 
     public TestCluster awaitNodes(int nodeCount) {
-        try (ClosableChannel channel = channelToConductor()) {
+        try (ClosableChannel channel = channelToNodeRegistry()) {
             NodeRegistryClient.on(channel).awaitNodes(nodeCount);
         }
         return this;
     }
 
-    public ClosableChannel channelToConductor() {
-        return ClosableChannel.of(_channelProvider.get("localhost", _conductor.getPort()));
+    public ClosableChannel channelToNodeRegistry() {
+        return ClosableChannel.of(_channelProvider.get("localhost", _nodeRegistryServer.getPort()));
     }
 
     @Override
@@ -71,6 +71,6 @@ public abstract class TestCluster implements AutoCloseable {
         for (GrpcServer grpcServer : _nodes) {
             grpcServer.stopAsync().awaitTerminated();
         }
-        _conductor.stopAsync().awaitTerminated();
+        _nodeRegistryServer.stopAsync().awaitTerminated();
     }
 }

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.google.common.util.concurrent.Service.State;
 
-import io.morethan.tweaky.conductor.ConductorComponent;
 import io.morethan.tweaky.conductor.NodeRegistryClient;
+import io.morethan.tweaky.conductor.NodeRegistryComponent;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
@@ -31,8 +31,8 @@ public class ClusterIntegrationTest {
         TestCluster cluster = _shutdownHelper.register(new TestCluster(3, ChannelProvider.plaintext()) {
 
             @Override
-            protected GrpcServer createConductor() {
-                return ConductorComponent.builder()
+            protected GrpcServer createNodeRegistry() {
+                return NodeRegistryComponent.builder()
                         .grpcServerModule(GrpcServerModule.plaintext(0))
                         .nodeNameProvider(NodeNameProvider.hostPort())
                         .nodeRegistrationValidator(NodeRegistrationValidator.singleToken(TOKEN))
@@ -41,7 +41,7 @@ public class ClusterIntegrationTest {
             }
 
             @Override
-            protected GrpcServer createNode(int number, int conductorPort, ChannelProvider channelProvider) {
+            protected GrpcServer createNode(int number, int nodeRegistryPort, ChannelProvider channelProvider) {
                 String nodeToken = TOKEN;
                 if (number == 2) {
                     nodeToken += "-invalid";
@@ -49,8 +49,8 @@ public class ClusterIntegrationTest {
                 return NodeComponent.builder()
                         .grpcServerModule(GrpcServerModule.plaintext(0))
                         .token(nodeToken)
-                        .conductorHost("localhost")
-                        .conductorPort(conductorPort)
+                        .nodeRegistryHost("localhost")
+                        .nodeRegistryPort(nodeRegistryPort)
                         .autoRegister(true)
                         .build()
                         .server();
@@ -62,7 +62,7 @@ public class ClusterIntegrationTest {
         assertThat(cluster.nodes().get(2).state()).isEqualTo(State.TERMINATED);
         // assertThat(e).hasRootCauseInstanceOf(NodeRejectedException.class);
 
-        try (ClosableChannel channel = cluster.channelToConductor()) {
+        try (ClosableChannel channel = cluster.channelToNodeRegistry()) {
             NodeRegistryClient nodeRegistryClient = NodeRegistryClient.on(channel);
             assertThat(nodeRegistryClient.nodeCount()).isEqualTo(2);
             nodeRegistryClient.awaitNodes(1);

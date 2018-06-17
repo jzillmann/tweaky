@@ -1,14 +1,11 @@
 package io.morethan.tweaky.node;
 
-import java.util.List;
-
 import io.grpc.Channel;
 import io.grpc.StatusRuntimeException;
 import io.morethan.tweaky.grpc.Errors;
 import io.morethan.tweaky.node.proto.NodeGrpc;
 import io.morethan.tweaky.node.proto.NodeGrpc.NodeBlockingStub;
 import io.morethan.tweaky.node.proto.NodeProto.NodeTokenRequest;
-import io.morethan.tweaky.node.proto.NodeProto.ServerServicesRequest;
 
 /**
  * A client for {@link NodeGrpc}.
@@ -19,14 +16,6 @@ public class NodeClient {
 
     private NodeClient(NodeBlockingStub blockingStub) {
         _blockingStub = blockingStub;
-    }
-
-    public List<String> serverServices() {
-        try {
-            return _blockingStub.serverServices(ServerServicesRequest.getDefaultInstance()).getNameList();
-        } catch (StatusRuntimeException e) {
-            throw Errors.unwrapped(e);
-        }
     }
 
     public String token() {

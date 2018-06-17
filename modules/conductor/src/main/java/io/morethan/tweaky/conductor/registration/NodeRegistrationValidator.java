@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import io.morethan.tweaky.conductor.util.Try;
 
 /**
- * Responsible for verifying that a node, which attempts to register on the conductor is allowed to join.
+ * Responsible for verifying that a node, which attempts to register.
  */
 public interface NodeRegistrationValidator {
 

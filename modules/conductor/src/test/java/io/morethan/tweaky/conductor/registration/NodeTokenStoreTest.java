@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Supplier;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -62,52 +64,53 @@ class NodeTokenStoreTest {
 
     @Test
     @RepeatedTest(5)
-    void testConcurrent() throws InterruptedException {
-        String[] tokens = new String[50];
-        NodeTokenStore tokenStore = new NodeTokenStore();
-        for (int i = 0; i < tokens.length; i++) {
-            tokens[i] = "token" + i;
-            tokenStore.addToken(tokens[i]);
-        }
-
-        CountDownLatch allTokensRegistered = new CountDownLatch(tokens.length);
-        Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
-        Set<String> registrationFailures = ConcurrentHashMap.newKeySet();
-        for (int i = 0; i < threads.length; i++) {
-            threads[i] = new Thread() {
-                @Override
-                public void run() {
-                    Random random = new Random();
-                    Try<NodeContact, String> registrationResult;
-                    if (random.nextBoolean()) {
-                        registrationResult = Try.success(mock(NodeContact.class));
-                    } else {
-                        registrationResult = Try.failure("failed for some reason");
-                    }
-                    while (allTokensRegistered.getCount() > 0) {
-                        String token = tokens[random.nextInt(tokens.length)];
-                        Try<NodeContact, String> registrationTry = tokenStore.accept("localhost", random.nextInt(20_000), token, () -> registrationResult);
-                        if (registrationTry.isSuccess()) {
-                            allTokensRegistered.countDown();
-                        } else {
-                            registrationFailures.add(registrationTry.failure());
-                        }
-                        String resultString = registrationTry.isSuccess() ? "success!" : registrationTry.failure();
-                        LOG.info("Tried register token {} - {}", token, resultString);
-                    }
-                }
-            };
-            threads[i].start();
-        }
-
-        allTokensRegistered.await();
-        assertThat(registrationFailures).isNotEmpty();
-        for (String failure : registrationFailures) {
-            if (!failure.contains("failed for some reason") && !failure.contains("Token already used")) {
-                fail("Unexpected failure: " + failure);
+    void testConcurrent() {
+        Assertions.assertTimeoutPreemptively(Duration.ofSeconds(30), () -> {
+            String[] tokens = new String[50];
+            NodeTokenStore tokenStore = new NodeTokenStore();
+            for (int i = 0; i < tokens.length; i++) {
+                tokens[i] = "token" + i;
+                tokenStore.addToken(tokens[i]);
             }
 
-        }
+            CountDownLatch allTokensRegistered = new CountDownLatch(tokens.length);
+            Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
+            Set<String> registrationFailures = ConcurrentHashMap.newKeySet();
+            for (int i = 0; i < threads.length; i++) {
+                threads[i] = new Thread() {
+                    @Override
+                    public void run() {
+                        Random random = new Random();
+                        Try<NodeContact, String> registrationResult;
+                        if (random.nextInt(10) < 3) {
+                            registrationResult = Try.failure("failed for some reason");
+                        } else {
+                            registrationResult = Try.success(mock(NodeContact.class));
+                        }
+                        while (allTokensRegistered.getCount() > 0) {
+                            String token = tokens[random.nextInt(tokens.length)];
+                            Try<NodeContact, String> registrationTry = tokenStore.accept("localhost", random.nextInt(20_000), token, () -> registrationResult);
+                            if (registrationTry.isSuccess()) {
+                                allTokensRegistered.countDown();
+                            } else {
+                                registrationFailures.add(registrationTry.failure());
+                            }
+                            String resultString = registrationTry.isSuccess() ? "success!" : registrationTry.failure();
+                            LOG.info("Tried register token {} - {}", token, resultString);
+                        }
+                    }
+                };
+                threads[i].start();
+            }
+
+            allTokensRegistered.await();
+            assertThat(registrationFailures).isNotEmpty();
+            for (String failure : registrationFailures) {
+                if (!failure.contains("failed for some reason") && !failure.contains("Token already used")) {
+                    fail("Unexpected failure: " + failure);
+                }
+            }
+        });
     }
 
 }

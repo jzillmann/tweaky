@@ -8,10 +8,19 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import dagger.multibindings.IntoSet;
+import io.grpc.BindableService;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 
 @Module
-public class NodeRegistrationModule {
+public class NodeRegistryModule {
+
+    @Provides
+    @Singleton
+    @IntoSet
+    BindableService nodeRegistryService(NodeRegistry nodeRegistry) {
+        return new NodeRegistryGrpcService(nodeRegistry);
+    }
 
     @Provides
     @Singleton

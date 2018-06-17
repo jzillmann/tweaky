@@ -5,23 +5,23 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import io.morethan.tweaky.conductor.registration.NodeNameProvider;
-import io.morethan.tweaky.conductor.registration.NodeRegistrationModule;
 import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
+import io.morethan.tweaky.conductor.registration.NodeRegistryModule;
 import io.morethan.tweaky.grpc.GrpcServicesModule;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 
 /**
- * Main component of the conductor.
+ * Main component of the node registry.
  */
-@Component(modules = { ConductorModule.class, NodeRegistrationModule.class, GrpcServerModule.class, GrpcServicesModule.class })
+@Component(modules = { NodeRegistryModule.class, GrpcServerModule.class, GrpcServicesModule.class })
 @Singleton
-public interface ConductorComponent {
+public interface NodeRegistryComponent {
 
     GrpcServer server();
 
     public static Builder builder() {
-        return DaggerConductorComponent.builder();
+        return DaggerNodeRegistryComponent.builder();
     }
 
     @Component.Builder
@@ -61,7 +61,7 @@ public interface ConductorComponent {
         @BindsInstance
         Builder nodeNameProvider(NodeNameProvider nodeNameProvider);
 
-        ConductorComponent build();
+        NodeRegistryComponent build();
     }
 
 }

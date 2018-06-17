@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import io.morethan.tweaky.conductor.util.Try;
 
 /**
- * Takes care of registering nodes for a conductor.
+ * Takes care of registering nodes.
  */
 public class NodeRegistry {
 
