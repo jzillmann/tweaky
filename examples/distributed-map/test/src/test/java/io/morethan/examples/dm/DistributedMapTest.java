@@ -45,7 +45,6 @@ public class DistributedMapTest {
                         .token("doesn't matter")
                         .conductorHost("localhost")
                         .conductorPort(conductorPort)
-                        .channelProvider(channelProvider)
                         .autoRegister(true)
                         .build().server();
             }
@@ -62,7 +61,13 @@ public class DistributedMapTest {
                 inserter.put("key2", "2");
                 inserter.put("key3", "3");
                 inserter.put("key4", "4");
+
+                inserter.put("key1", "1.1");
             }
+            assertThat(gatewayClient.get("key1")).isEqualTo("1.1");
+            assertThat(gatewayClient.get("key2")).isEqualTo("2");
+            assertThat(gatewayClient.get("key3")).isEqualTo("3");
+            assertThat(gatewayClient.get("key4")).isEqualTo("4");
         }
     }
 }

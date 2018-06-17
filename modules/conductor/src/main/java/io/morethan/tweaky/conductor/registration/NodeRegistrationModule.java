@@ -9,7 +9,6 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
-import io.morethan.tweaky.grpc.client.PlaintextChannelProvider;
 
 @Module
 public class NodeRegistrationModule {
@@ -24,13 +23,6 @@ public class NodeRegistrationModule {
     @Singleton
     NodeAcceptor nodeAcceptor(NodeRegistrationValidator nodeRegistrationValidator, NodeNameProvider nodeNameProvider, ChannelProvider channelProvider, NodeClientProvider nodeClientProvider) {
         return new NodeAcceptor(nodeRegistrationValidator, nodeNameProvider, channelProvider, nodeClientProvider);
-    }
-
-    @Provides
-    @Singleton
-    ChannelProvider channelProvider() {
-        // TODO lookup based on configuration
-        return new PlaintextChannelProvider();
     }
 
     @Provides

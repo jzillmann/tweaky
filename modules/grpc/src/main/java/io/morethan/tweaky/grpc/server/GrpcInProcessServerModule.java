@@ -3,6 +3,7 @@ package io.morethan.tweaky.grpc.server;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.InProcessChannelProvider;
 
 /**
@@ -21,6 +22,11 @@ public class GrpcInProcessServerModule extends GrpcServerModule {
     @Override
     ServerBuilder<?> serverBuilder() {
         return InProcessServerBuilder.forName(_name);
+    }
+
+    @Override
+    ChannelProvider channelProvider() {
+        return ChannelProvider.inProcess(_name);
     }
 
 }

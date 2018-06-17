@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.netty.NettyServerBuilder;
+import io.morethan.tweaky.grpc.client.ChannelProvider;
 
 /**
  * A {@link GrpcServerModule} which creates a {@link Server} in simple plaintext mode (no SSL).
@@ -41,7 +42,11 @@ public class GrpcPlaintextServerModule extends GrpcServerModule {
         }
         LOG.info("Creating server for port {}", _port);
         return ServerBuilder.forPort(_port);
+    }
 
+    @Override
+    ChannelProvider channelProvider() {
+        return ChannelProvider.plaintext();
     }
 
 }

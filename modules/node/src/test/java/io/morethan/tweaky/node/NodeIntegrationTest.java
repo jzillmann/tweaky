@@ -22,7 +22,6 @@ class NodeIntegrationTest {
                 .token("token9")
                 .conductorHost("localhost")
                 .conductorPort(1234)
-                .channelProvider(ChannelProvider.plaintext())
                 .autoRegister(false)
                 .build();
         GrpcServer server = component.server();
@@ -51,7 +50,6 @@ class NodeIntegrationTest {
                 .token("token9")
                 .conductorHost("localhost")
                 .conductorPort(1234)
-                .channelProvider(ChannelProvider.plaintext())
                 .autoRegister(true)
                 .build();
         GrpcServer server = component.server();

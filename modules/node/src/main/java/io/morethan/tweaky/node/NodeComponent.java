@@ -5,7 +5,6 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import io.morethan.tweaky.grpc.GrpcServicesModule;
-import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 import io.morethan.tweaky.node.NodeModule.AutoRegister;
@@ -81,15 +80,6 @@ public interface NodeComponent {
 
         @BindsInstance
         Builder autoRegister(@AutoRegister boolean autoRegister);
-
-        /**
-         * A {@link ChannelProvider} for outgoing communication, i.e. to the conductor.
-         * 
-         * @param channelProvider
-         * @return
-         */
-        @BindsInstance
-        Builder channelProvider(ChannelProvider channelProvider);
 
         NodeComponent build();
 

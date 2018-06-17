@@ -48,7 +48,6 @@ public class ClusterIntegrationTest {
                 }
                 return NodeComponent.builder()
                         .grpcServerModule(GrpcServerModule.plaintext(0))
-                        .channelProvider(channelProvider)
                         .token(nodeToken)
                         .conductorHost("localhost")
                         .conductorPort(conductorPort)

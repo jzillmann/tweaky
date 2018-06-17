@@ -18,6 +18,7 @@ import dagger.multibindings.ElementsIntoSet;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.morethan.tweaky.grpc.client.ChannelProvider;
 
 /**
  * Abstract module for creating a {@link Server} instance.
@@ -37,6 +38,12 @@ public class GrpcServerModule {
     @Provides
     @Singleton
     ServerBuilder<?> serverBuilder() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Provides
+    @Singleton
+    ChannelProvider channelProvider() {
         throw new UnsupportedOperationException();
     }
 
