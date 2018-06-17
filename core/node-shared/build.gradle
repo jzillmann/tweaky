@@ -1,5 +1,5 @@
 apply from: rootProject.file("gradle/grpc.gradle")
 
 dependencies {
-    compile project(':tweaky-conductor-shared')
+    compile project(':tweaky-node-registry-shared')
 }

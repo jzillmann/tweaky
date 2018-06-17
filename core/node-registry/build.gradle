@@ -1,7 +1,6 @@
 apply from: rootProject.file("gradle/dagger.gradle")
 
 dependencies {
-    compile project(':tweaky-grpc')
-    compile project(':tweaky-node-shared')
     compile project(':tweaky-node-registry-shared')
+    compile project(':tweaky-node-shared')
 }

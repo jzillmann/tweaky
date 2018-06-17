@@ -1,10 +1,10 @@
 rootProject.name = 'tweaky'
 
 core('grpc')
-core('conductor')
-core('conductor-shared')
 core('node')
 core('node-shared')
+core('node-registry')
+core('node-registry-shared')
 core('test')
 
 example('distributed-map', 'shared')

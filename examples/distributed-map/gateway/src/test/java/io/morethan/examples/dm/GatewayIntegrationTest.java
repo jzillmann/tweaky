@@ -5,15 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import io.morethan.examples.dm.gateway.GatewayComponent;
-import io.morethan.tweaky.conductor.NodeRegistryComponent;
-import io.morethan.tweaky.conductor.registration.NodeNameProvider;
-import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.examples.dm.gateway.proto.GatewayGrpc;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.client.ServiceRegistryClient;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
+import io.morethan.tweaky.noderegistry.NodeNameProvider;
+import io.morethan.tweaky.noderegistry.NodeRegistrationValidator;
+import io.morethan.tweaky.noderegistry.NodeRegistryComponent;
 
 class GatewayIntegrationTest {
 

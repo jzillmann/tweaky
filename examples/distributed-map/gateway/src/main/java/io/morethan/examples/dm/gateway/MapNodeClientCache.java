@@ -5,8 +5,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import com.google.common.base.Verify;
 
 import io.morethan.examples.dm.MapNodeClient;
-import io.morethan.tweaky.conductor.registration.NodeContact;
-import io.morethan.tweaky.conductor.registration.NodeListener;
+import io.morethan.tweaky.noderegistry.NodeContact;
+import io.morethan.tweaky.noderegistry.NodeListener;
 
 /**
  * Cache of {@link MapNodeClient}s.

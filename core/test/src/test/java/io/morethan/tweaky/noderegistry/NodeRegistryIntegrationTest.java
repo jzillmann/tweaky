@@ -6,12 +6,6 @@ import static org.assertj.core.api.Assertions.fail;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.morethan.tweaky.conductor.NodeRegistryClient;
-import io.morethan.tweaky.conductor.NodeRegistryComponent;
-import io.morethan.tweaky.conductor.registration.NodeNameProvider;
-import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
-import io.morethan.tweaky.conductor.registration.NodeTokenStore;
-import io.morethan.tweaky.conductor.registration.proto.NodeRegistryGrpc;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.client.ServiceRegistryClient;
@@ -20,6 +14,7 @@ import io.morethan.tweaky.grpc.server.GrpcServerModule;
 import io.morethan.tweaky.grpc.server.proto.ServiceRegistryGrpc;
 import io.morethan.tweaky.node.NodeClient;
 import io.morethan.tweaky.node.NodeGrpcService;
+import io.morethan.tweaky.noderegistry.proto.NodeRegistryGrpc;
 import io.morethan.tweaky.testsupport.GrpcServerRule;
 import io.morethan.tweaky.testsupport.ShutdownHelper;
 

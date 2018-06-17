@@ -3,10 +3,10 @@ package io.morethan.tweaky.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.morethan.tweaky.conductor.NodeRegistryClient;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.server.GrpcServer;
+import io.morethan.tweaky.noderegistry.NodeRegistryClient;
 
 /**
  * Bundles node registry and n nodes.

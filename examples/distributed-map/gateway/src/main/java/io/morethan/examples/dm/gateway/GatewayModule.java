@@ -11,7 +11,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
 import io.grpc.BindableService;
-import io.morethan.tweaky.conductor.registration.NodeListener;
+import io.morethan.tweaky.noderegistry.NodeListener;
 
 @Module
 public class GatewayModule {

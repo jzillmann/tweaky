@@ -1,6 +1,0 @@
-apply from: rootProject.file("gradle/dagger.gradle")
-
-dependencies {
-    compile project(':tweaky-conductor-shared')
-    compile project(':tweaky-node-shared')
-}

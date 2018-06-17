@@ -2,8 +2,8 @@ package io.morethan.tweaky.node;
 
 import dagger.Lazy;
 import io.grpc.ManagedChannel;
-import io.morethan.tweaky.conductor.NodeRegistryClient;
 import io.morethan.tweaky.grpc.server.GrpcServer;
+import io.morethan.tweaky.noderegistry.NodeRegistryClient;
 
 /**
  * Registers the node on a node registry once the node's {@link GrpcServer} has been started successfully.

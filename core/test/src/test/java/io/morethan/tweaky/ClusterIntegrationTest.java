@@ -7,15 +7,15 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.google.common.util.concurrent.Service.State;
 
-import io.morethan.tweaky.conductor.NodeRegistryClient;
-import io.morethan.tweaky.conductor.NodeRegistryComponent;
-import io.morethan.tweaky.conductor.registration.NodeNameProvider;
-import io.morethan.tweaky.conductor.registration.NodeRegistrationValidator;
 import io.morethan.tweaky.grpc.client.ChannelProvider;
 import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.grpc.server.GrpcServer;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
 import io.morethan.tweaky.node.NodeComponent;
+import io.morethan.tweaky.noderegistry.NodeNameProvider;
+import io.morethan.tweaky.noderegistry.NodeRegistrationValidator;
+import io.morethan.tweaky.noderegistry.NodeRegistryClient;
+import io.morethan.tweaky.noderegistry.NodeRegistryComponent;
 import io.morethan.tweaky.test.TestCluster;
 import io.morethan.tweaky.testsupport.ShutdownHelper;
 

@@ -5,10 +5,10 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import io.morethan.examples.dm.gateway.GatewayModule.NodeCount;
-import io.morethan.tweaky.conductor.NodeRegistryComponent;
-import io.morethan.tweaky.conductor.registration.NodeRegistryModule;
 import io.morethan.tweaky.grpc.GrpcServicesModule;
 import io.morethan.tweaky.grpc.server.GrpcServerModule;
+import io.morethan.tweaky.noderegistry.NodeRegistryComponent;
+import io.morethan.tweaky.noderegistry.NodeRegistryModule;
 
 @Component(modules = { NodeRegistryModule.class, GrpcServerModule.class, GrpcServicesModule.class, GatewayModule.class })
 @Singleton

@@ -1,6 +1,6 @@
 apply from: rootProject.file("gradle/dagger.gradle")
 
 dependencies {
-    compile project(':tweaky-conductor')
+    compile project(':tweaky-node-registry')
     compile project(':tweaky-example-distributed-map-shared')
 }
