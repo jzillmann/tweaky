@@ -1,20 +1,20 @@
 rootProject.name = 'tweaky'
 
-module('grpc')
-module('conductor')
-module('conductor-shared')
-module('node')
-module('node-shared')
-module('test')
+core('grpc')
+core('conductor')
+core('conductor-shared')
+core('node')
+core('node-shared')
+core('test')
 
 example('distributed-map', 'shared')
 example('distributed-map', 'node')
 example('distributed-map', 'gateway')
 
-def module(String shortName) {
+def core(String shortName) {
     def name = ":tweaky-$shortName"
     include name
-    project(name).projectDir = file("modules/$shortName")
+    project(name).projectDir = file("core/$shortName")
 }
 
 def example(String exampleName, String moduleName) {
