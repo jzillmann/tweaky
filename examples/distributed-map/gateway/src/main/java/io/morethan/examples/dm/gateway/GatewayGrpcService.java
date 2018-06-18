@@ -26,6 +26,18 @@ public class GatewayGrpcService extends GatewayImplBase {
     }
 
     @Override
+    public void putSync(PutRequest request, StreamObserver<PutReply> responseObserver) {
+        try {
+            int hostingNode = hostingNode(request.getKey());
+            _clientCache.client(hostingNode).put(request);
+            responseObserver.onNext(PutReply.getDefaultInstance());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
     public StreamObserver<PutRequest> put(StreamObserver<PutReply> responseObserver) {
         Inserter[] inserters = new Inserter[_clientCache.clientCount()];
         return new StreamObserver<PutRequest>() {
@@ -40,7 +52,7 @@ public class GatewayGrpcService extends GatewayImplBase {
                     inserters[node] = inserter;
                 }
                 LOG.info("Putting {}={} into node {}", request.getKey(), request.getValue(), node);
-                inserter.put(request.getKey(), request.getValue());
+                inserter.put(request);
             }
 
             @Override

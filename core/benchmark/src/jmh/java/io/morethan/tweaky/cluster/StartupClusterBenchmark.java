@@ -1,5 +1,7 @@
 package io.morethan.tweaky.cluster;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +20,7 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
 import io.morethan.tweaky.grpc.client.ChannelProvider;
+import io.morethan.tweaky.grpc.client.ClosableChannel;
 import io.morethan.tweaky.noderegistry.NodeRegistryClient;
 import io.morethan.tweaky.test.cluster.PlainMultiTokenCluster;
 import io.morethan.tweaky.test.cluster.PlainSingleTokenCluster;
@@ -58,7 +61,9 @@ public class StartupClusterBenchmark {
     @Benchmark
     public void startup() throws Exception {
         _cluster.boot().awaitNodes();
-        NodeRegistryClient registryClient = NodeRegistryClient.on(_cluster.channelToNodeRegistry());
-        registryClient.nodeCount();
+        try (ClosableChannel channel = _cluster.channelToNodeRegistry();) {
+            NodeRegistryClient registryClient = NodeRegistryClient.on(channel);
+            assertThat(registryClient.nodeCount()).isEqualTo(nodes);
+        }
     }
 }

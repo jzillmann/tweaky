@@ -18,8 +18,12 @@ public class Inserter implements AutoCloseable {
     }
 
     public void put(String key, String value) {
+        put(PutRequest.newBuilder().setKey(key).setValue(value).build());
+    }
+
+    public void put(PutRequest putRequest) {
         _replyStream.throwOnError();
-        _requestStream.onNext(PutRequest.newBuilder().setKey(key).setValue(value).build());
+        _requestStream.onNext(putRequest);
     }
 
     @Override

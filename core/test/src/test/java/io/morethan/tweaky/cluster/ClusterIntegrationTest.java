@@ -1,4 +1,4 @@
-package io.morethan.tweaky;
+package io.morethan.tweaky.cluster;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,11 +25,11 @@ public class ClusterIntegrationTest {
     void testBootupAndRegistration_singleToken() throws Exception {
         TestCluster cluster = _shutdownHelper.register(new PlainSingleTokenCluster(3, ChannelProvider.plaintext(), "my-cluster") {
             @Override
-            protected GrpcServer createNode(int number, int nodeRegistryPort, ChannelProvider channelProvider) {
+            protected GrpcServer createNode(int number, int nodeRegistryPort) {
                 if (number == 2) {
                     return super.createNode(nodeRegistryPort, _token + "-invalid");
                 }
-                return super.createNode(number, nodeRegistryPort, channelProvider);
+                return super.createNode(number, nodeRegistryPort);
             }
 
         });
@@ -50,11 +50,11 @@ public class ClusterIntegrationTest {
     void testBootupAndRegistration_multiToken() throws Exception {
         TestCluster cluster = _shutdownHelper.register(new PlainMultiTokenCluster(3, ChannelProvider.plaintext()) {
             @Override
-            protected GrpcServer createNode(int number, int nodeRegistryPort, ChannelProvider channelProvider) {
+            protected GrpcServer createNode(int number, int nodeRegistryPort) {
                 if (number == 2) {
                     return super.createNode(nodeRegistryPort, "invalid-token");
                 }
-                return super.createNode(number, nodeRegistryPort, channelProvider);
+                return super.createNode(number, nodeRegistryPort);
             }
 
         });

@@ -42,7 +42,7 @@ public class PlainMultiTokenCluster extends TestCluster {
     }
 
     @Override
-    protected GrpcServer createNode(int number, int nodeRegistryPort, ChannelProvider channelProvider) {
+    protected GrpcServer createNode(int number, int nodeRegistryPort) {
         return createNode(nodeRegistryPort, _nodeTokens[number]);
     }
 

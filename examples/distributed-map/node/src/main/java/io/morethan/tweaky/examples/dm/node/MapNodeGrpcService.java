@@ -22,6 +22,13 @@ public class MapNodeGrpcService extends MapNodeImplBase {
     }
 
     @Override
+    public void putSync(PutRequest request, StreamObserver<PutReply> responseObserver) {
+        _map.put(request.getKey(), request.getValue());
+        responseObserver.onNext(PutReply.getDefaultInstance());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public StreamObserver<PutRequest> put(StreamObserver<PutReply> responseObserver) {
         return new StreamObserver<PutRequest>() {
 

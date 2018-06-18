@@ -23,6 +23,10 @@ public abstract class TestCluster implements AutoCloseable {
         _channelProvider = channelProvider;
     }
 
+    public int numberOfNodes() {
+        return _numberOfNodes;
+    }
+
     public GrpcServer nodeRegistryServer() {
         return _nodeRegistryServer;
     }
@@ -37,14 +41,14 @@ public abstract class TestCluster implements AutoCloseable {
 
     protected abstract GrpcServer createNodeRegistry();
 
-    protected abstract GrpcServer createNode(int number, int nodeRegistryPort, ChannelProvider channelProvider);
+    protected abstract GrpcServer createNode(int number, int nodeRegistryPort);
 
     public TestCluster boot() {
         _nodeRegistryServer = createNodeRegistry();
         _nodeRegistryServer.startAsync().awaitRunning();
 
         for (int i = 0; i < _numberOfNodes; i++) {
-            GrpcServer node = createNode(i, _nodeRegistryServer.getPort(), _channelProvider);
+            GrpcServer node = createNode(i, _nodeRegistryServer.getPort());
             node.startAsync();
             _nodes.add(node);
         }

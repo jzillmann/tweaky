@@ -31,7 +31,11 @@ public class MapNodeClient {
     }
 
     public void put(String key, String value) {
-        _blockingStub.putSync(PutRequest.newBuilder().setKey(key).setValue(value).build());
+        put(PutRequest.newBuilder().setKey(key).setValue(value).build());
+    }
+
+    public void put(PutRequest putRequest) {
+        _blockingStub.putSync(putRequest);
     }
 
     public String get(String key) {

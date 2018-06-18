@@ -1,4 +1,4 @@
-package io.morethan.tweaky.noderegistry;
+package io.morethan.tweaky.cluster;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -14,11 +14,15 @@ import io.morethan.tweaky.grpc.server.GrpcServerModule;
 import io.morethan.tweaky.grpc.server.proto.ServiceRegistryGrpc;
 import io.morethan.tweaky.node.NodeClient;
 import io.morethan.tweaky.node.NodeGrpcService;
+import io.morethan.tweaky.noderegistry.NodeNameProvider;
+import io.morethan.tweaky.noderegistry.NodeRegistrationValidator;
+import io.morethan.tweaky.noderegistry.NodeRegistryClient;
+import io.morethan.tweaky.noderegistry.NodeRegistryComponent;
+import io.morethan.tweaky.noderegistry.NodeTokenStore;
 import io.morethan.tweaky.noderegistry.proto.NodeRegistryGrpc;
 import io.morethan.tweaky.testsupport.GrpcServerRule;
 import io.morethan.tweaky.testsupport.ShutdownHelper;
 
-@SuppressWarnings("unchecked")
 public class NodeRegistryIntegrationTest {
 
     static final String VALID_TOKEN_1 = "node1";
