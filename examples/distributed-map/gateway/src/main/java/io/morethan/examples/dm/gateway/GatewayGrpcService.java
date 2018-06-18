@@ -12,6 +12,7 @@ import io.morethan.tweaky.examples.dm.shared.proto.GetReply;
 import io.morethan.tweaky.examples.dm.shared.proto.GetRequest;
 import io.morethan.tweaky.examples.dm.shared.proto.PutReply;
 import io.morethan.tweaky.examples.dm.shared.proto.PutRequest;
+import io.morethan.tweaky.grpc.Errors;
 
 /**
  * GRPC service of the Gateway server.
@@ -47,17 +48,25 @@ public class GatewayGrpcService extends GatewayImplBase {
                 int node = hostingNode(request.getKey());
                 Inserter inserter = inserters[node];
                 if (inserter == null) {
-                    LOG.info("Create inserter for node " + node);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Create inserter for node " + node);
+                    }
                     inserter = _clientCache.client(node).createInserter();
                     inserters[node] = inserter;
                 }
-                LOG.info("Putting {}={} into node {}", request.getKey(), request.getValue(), node);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Putting {}={} into node {}", request.getKey(), request.getValue(), node);
+                }
                 inserter.put(request);
             }
 
             @Override
             public void onError(Throwable t) {
-                LOG.warn("Client signaled error", t);
+                if (Errors.isCancelled(t)) {
+                    LOG.warn("Gateway client cancelled the call: " + t.getMessage());
+                } else {
+                    LOG.error("Gateway client signaled error", t);
+                }
             }
 
             @Override

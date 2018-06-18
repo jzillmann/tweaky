@@ -1,6 +1,6 @@
 package io.morethan.examples.dm.gateway;
 
-import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Verify;
 
@@ -14,24 +14,24 @@ import io.morethan.tweaky.noderegistry.NodeListener;
 public class MapNodeClientCache implements NodeListener {
 
     // TODO rename + make this common
-    private final AtomicReferenceArray<MapNodeClient> _clients;
-    private int _registeredClients;
+    private final AtomicInteger _registeredClients = new AtomicInteger();
+    private volatile MapNodeClient[] _clients;
 
     public MapNodeClientCache(int numNodes) {
-        _clients = new AtomicReferenceArray<>(new MapNodeClient[numNodes]);
+        _clients = new MapNodeClient[numNodes];
     }
 
     public int clientCount() {
-        return _clients.length();
+        return _clients.length;
     }
 
     @Override
     public void addNode(NodeContact nodeContact) {
-        _clients.set(_registeredClients++, MapNodeClient.on(nodeContact.channel()));
+        _clients[_registeredClients.getAndIncrement()] = MapNodeClient.on(nodeContact.channel());
     }
 
     public MapNodeClient client(int node) {
-        MapNodeClient mapNodeClient = _clients.get(node);
+        MapNodeClient mapNodeClient = _clients[node];
         Verify.verifyNotNull(mapNodeClient, "Client for node %s has not yet been set!", node);
         // TODO if we would have managed channels, we could investigate the channels state for shutdown...
         return mapNodeClient;

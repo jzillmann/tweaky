@@ -11,6 +11,7 @@ import io.morethan.tweaky.examples.dm.shared.proto.GetReply;
 import io.morethan.tweaky.examples.dm.shared.proto.GetRequest;
 import io.morethan.tweaky.examples.dm.shared.proto.PutReply;
 import io.morethan.tweaky.examples.dm.shared.proto.PutRequest;
+import io.morethan.tweaky.grpc.Errors;
 
 public class MapNodeGrpcService extends MapNodeImplBase {
 
@@ -39,7 +40,11 @@ public class MapNodeGrpcService extends MapNodeImplBase {
 
             @Override
             public void onError(Throwable t) {
-                LOG.warn("Gateway signaled error", t);
+                if (Errors.isCancelled(t)) {
+                    LOG.warn("Map node client cancelled the call: " + t.getMessage());
+                } else {
+                    LOG.error("Gateway signaled error", t);
+                }
             }
 
             @Override

@@ -1,4 +1,4 @@
-package io.morethan.examples.dm;
+package io.morethan.tweaky.grpc.observer;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -19,6 +19,11 @@ public class CompletableObserver<T> implements StreamObserver<T> {
     private final CountDownLatch _countDownLatch = new CountDownLatch(1);
     private T _resultValue;
     private Throwable _error;
+    private final String _name;
+
+    public CompletableObserver(String name) {
+        _name = name;
+    }
 
     @Override
     public void onNext(T value) {
@@ -27,8 +32,13 @@ public class CompletableObserver<T> implements StreamObserver<T> {
 
     @Override
     public void onError(Throwable t) {
-        LOG.error("Got error", t);
+        if (Errors.isCancelled(t)) {
+            LOG.warn(_name + " got cancelled: " + t.getMessage());
+        } else {
+            LOG.error(_name + " got error", t);
+        }
         _error = t;
+        _countDownLatch.countDown();
     }
 
     @Override

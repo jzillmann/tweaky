@@ -13,6 +13,8 @@ import io.morethan.tweaky.examples.dm.shared.proto.GetRequest;
 import io.morethan.tweaky.examples.dm.shared.proto.PutReply;
 import io.morethan.tweaky.examples.dm.shared.proto.PutRequest;
 import io.morethan.tweaky.grpc.Errors;
+import io.morethan.tweaky.grpc.observer.CompletableObserver;
+import io.morethan.tweaky.grpc.observer.Observers;
 
 /**
  * Client for the {@link GatewayGrpc}.
@@ -29,9 +31,9 @@ public class GatewayClient {
     }
 
     public Inserter createInserter() {
-        CompletableObserver<PutReply> replyStream = new CompletableObserver<>();
-        StreamObserver<PutRequest> requestStream = _stub.put(replyStream);
-        return new Inserter(requestStream, replyStream);
+        CompletableObserver<PutReply> responseStream = new CompletableObserver<>("Gateway client response stream");
+        StreamObserver<PutRequest> requestStream = Observers.blockingRequestStream(responseStream, (incomingResponseStream) -> _stub.put(incomingResponseStream));
+        return new Inserter(requestStream, responseStream);
     }
 
     public void put(String key, String value) {

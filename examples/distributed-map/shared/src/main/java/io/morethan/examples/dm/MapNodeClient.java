@@ -2,6 +2,7 @@ package io.morethan.examples.dm;
 
 import io.grpc.Channel;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.CallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.morethan.tweaky.examples.dm.node.proto.MapNodeGrpc;
 import io.morethan.tweaky.examples.dm.node.proto.MapNodeGrpc.MapNodeBlockingStub;
@@ -10,6 +11,7 @@ import io.morethan.tweaky.examples.dm.shared.proto.GetRequest;
 import io.morethan.tweaky.examples.dm.shared.proto.PutReply;
 import io.morethan.tweaky.examples.dm.shared.proto.PutRequest;
 import io.morethan.tweaky.grpc.Errors;
+import io.morethan.tweaky.grpc.observer.CompletableObserver;
 
 /**
  * Client for the {@link MapNodeGrpc}.
@@ -25,9 +27,9 @@ public class MapNodeClient {
     }
 
     public Inserter createInserter() {
-        CompletableObserver<PutReply> replyStream = new CompletableObserver<>();
-        StreamObserver<PutRequest> requestStream = _stub.put(replyStream);
-        return new Inserter(requestStream, replyStream);
+        CompletableObserver<PutReply> responseStream = new CompletableObserver<>("Map node client response stream");
+        StreamObserver<PutRequest> requestStream = _stub.put(responseStream);
+        return new Inserter((CallStreamObserver<PutRequest>) requestStream, responseStream);
     }
 
     public void put(String key, String value) {

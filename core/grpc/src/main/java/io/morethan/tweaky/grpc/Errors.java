@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import io.grpc.Metadata;
 import io.grpc.Metadata.BinaryMarshaller;
 import io.grpc.Metadata.Key;
 import io.grpc.Status;
+import io.grpc.Status.Code;
 import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
 
@@ -92,5 +94,20 @@ public class Errors {
             return throwable;
         }
         return exception;
+    }
+
+    public static boolean isCancelled(Throwable throwable) {
+        Optional<Code> statusCode = getStatusCode(throwable);
+        return statusCode.isPresent() && statusCode.get() == Status.Code.CANCELLED;
+    }
+
+    public static Optional<Status.Code> getStatusCode(Throwable throwable) {
+        if (throwable instanceof StatusRuntimeException) {
+            return Optional.of(((StatusRuntimeException) throwable).getStatus().getCode());
+        }
+        if (throwable instanceof StatusException) {
+            return Optional.of(((StatusException) throwable).getStatus().getCode());
+        }
+        return Optional.empty();
     }
 }
