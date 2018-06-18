@@ -1,0 +1,15 @@
+eclipse {
+    jdt.file.withProperties {
+        it['org.eclipse.jdt.core.formatter.lineSplit'] = '200'
+        it['org.eclipse.jdt.core.formatter.comment.line_length'] = '120'
+        it['org.eclipse.jdt.core.formatter.tabulation.char'] = 'space'
+        it['org.eclipse.jdt.core.formatter.tabulation.size'] = '4'
+        it['org.eclipse.jdt.core.formatter.join_wrapped_lines'] = 'false'
+        it['org.eclipse.jdt.core.compiler.doc.comment.support'] = 'enabled'
+        it['org.eclipse.jdt.core.compiler.problem.missingOverrideAnnotation'] = 'warning'
+        it['org.eclipse.jdt.core.compiler.problem.missingJavadocTags'] = 'warning'
+        it['org.eclipse.jdt.core.compiler.problem.parameterAssignment'] = 'ignore'
+        it['org.eclipse.jdt.core.compiler.problem.syntheticAccessEmulation'] = 'ignore'
+        it['org.eclipse.jdt.core.compiler.problem.unqualifiedFieldAccess'] = 'ignore'
+    }
+}

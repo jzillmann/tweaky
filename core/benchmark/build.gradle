@@ -1,0 +1,6 @@
+apply plugin: 'io.morethan.jmhreport'
+apply from: rootProject.file("gradle/jmh.gradle")
+
+dependencies {
+    compile project(':tweaky-test')
+}

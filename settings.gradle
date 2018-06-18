@@ -6,6 +6,7 @@ core('node-shared')
 core('node-registry')
 core('node-registry-shared')
 core('test')
+core('benchmark')
 
 example('distributed-map', 'shared')
 example('distributed-map', 'node')

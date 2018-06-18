@@ -17,6 +17,7 @@ buildscript {
     dependencies {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
         classpath 'net.ltgt.gradle:gradle-apt-plugin:0.15'
+        classpath 'gradle.plugin.io.morethan.jmhreport:gradle-jmh-report:0.7.0'
     }
 }
 
@@ -25,6 +26,8 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'maven-publish'
+
+    apply from: rootProject.file("gradle/eclipse.gradle")
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -49,22 +52,6 @@ subprojects {
 
     repositories {
         jcenter()
-    }
-
-    eclipse {
-        jdt.file.withProperties {
-            it['org.eclipse.jdt.core.formatter.lineSplit'] = '200'
-            it['org.eclipse.jdt.core.formatter.comment.line_length'] = '180'
-            it['org.eclipse.jdt.core.formatter.tabulation.char'] = 'space'
-            it['org.eclipse.jdt.core.formatter.tabulation.size'] = '4'
-            it['org.eclipse.jdt.core.formatter.join_wrapped_lines'] = 'false'
-            it['org.eclipse.jdt.core.compiler.doc.comment.support'] = 'enabled'
-            it['org.eclipse.jdt.core.compiler.problem.missingOverrideAnnotation'] = 'warning'
-            it['org.eclipse.jdt.core.compiler.problem.missingJavadocTags'] = 'warning'
-            it['org.eclipse.jdt.core.compiler.problem.parameterAssignment'] = 'ignore'
-            it['org.eclipse.jdt.core.compiler.problem.syntheticAccessEmulation'] = 'ignore'
-            it['org.eclipse.jdt.core.compiler.problem.unqualifiedFieldAccess'] = 'ignore'
-        }
     }
 
     test {

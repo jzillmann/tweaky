@@ -1,4 +1,4 @@
-package io.morethan.tweaky.test;
+package io.morethan.tweaky.test.cluster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,4 +73,5 @@ public abstract class TestCluster implements AutoCloseable {
         }
         _nodeRegistryServer.stopAsync().awaitTerminated();
     }
+
 }

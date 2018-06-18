@@ -21,7 +21,7 @@ import io.morethan.tweaky.grpc.server.GrpcServerModule;
 import io.morethan.tweaky.noderegistry.NodeNameProvider;
 import io.morethan.tweaky.noderegistry.NodeRegistrationValidator;
 import io.morethan.tweaky.noderegistry.NodeRegistryClient;
-import io.morethan.tweaky.test.TestCluster;
+import io.morethan.tweaky.test.cluster.TestCluster;
 import io.morethan.tweaky.testsupport.ShutdownHelper;
 
 public class DistributedMapTest {
